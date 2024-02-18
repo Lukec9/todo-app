@@ -1,0 +1,93 @@
+/* styles.css */
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+.root-layout {
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nav {
+  display: flex;
+}
+
+.nav-link {
+  margin-right: 20px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.todo-list {
+  margin-top: 20px;
+}
+
+.todo-item {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.todo-item.completed {
+  background-color: #e6ffe6;
+}
+
+.todo-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.todo-title {
+  margin: 0;
+  font-weight: bold;
+}
+
+.todo-description {
+  margin-top: 5px;
+}
+
+.todo-created-at {
+  font-size: 12px;
+  color: #888;
+}
+
+.todo-form {
+  margin-top: 20px;
+}
+
+.todo-input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.todo-checkbox {
+  margin-bottom: 10px;
+}
+
+.todo-button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.todo-button:hover {
+  background-color: #555;
+}

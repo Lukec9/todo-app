@@ -10,6 +10,7 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const todoRoutes = require("./routes/todoRoutes");
+const cors = require("cors");
 // const helmet = require("helmet");
 // const mongoSanitize = require("express-mongo-sanitize");
 
@@ -32,6 +33,8 @@ const app = express();
 // app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
 // app.use(methodOverride("_method"));
 // app.use(express.static(path.join(__dirname, "public")));
 // app.use(
