@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import axios from "axios";
 import { TodoContext } from "../contexts/TodoContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { Link } from "react-router-dom";
 
 const IndexPage = () => {
   const { todos, dispatch } = useContext(TodoContext);
@@ -28,12 +29,9 @@ const IndexPage = () => {
             className={`todo-item ${t.completed ? "completed" : ""}`}
           >
             <div className="todo-header">
-              <a
-                href={`http://localhost:3001/todos/${t._id}`}
-                className="todo-title"
-              >
+              <Link to={`/todos/${t._id}`} className="todo-title">
                 {t.title}
-              </a>
+              </Link>
               <p className="todo-created-at">
                 {formatDistanceToNow(new Date(t.createdAt), {
                   addSuffix: true,
