@@ -3,21 +3,25 @@
 // }
 
 const express = require("express");
-// const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
-// const ExpressError = require("./utils/ExpressError");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const todoRoutes = require("./routes/todoRoutes");
+const userRoutes = require("./routes/userRoutes");
 const cors = require("cors");
 // const helmet = require("helmet");
 // const mongoSanitize = require("express-mongo-sanitize");
 
 const MongoStore = require("connect-mongo");
+const User = require("./models/userModel");
+
+const app = express();
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const dbUrl = "mongodb://localhost:27017/todo-app";
-
 mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
@@ -26,15 +30,10 @@ db.once("open", () => {
   console.log("Database connected");
 });
 
-const app = express();
-
 // app.engine("ejs", ejsMate);
 // app.set("view engine", "ejs");
 // app.set("views", path.join(__dirname, "views"));
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
 // app.use(methodOverride("_method"));
 // app.use(express.static(path.join(__dirname, "public")));
 // app.use(
@@ -52,9 +51,9 @@ const store = MongoStore.create({
   touchAfter: 24 * 3600,
 });
 
-store.on("error", function (e) {
-  console.log("SESSION STORE ERROR", e);
-});
+// store.on("error", function (e) {
+//   console.log("SESSION STORE ERROR", e);
+// });
 
 const sessionConfig = {
   store,
@@ -72,15 +71,14 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 // app.use(helmet());
-
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.use(new LocalStrategy(User.authenticate()));
-
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use("/api/todos", todoRoutes);
+app.use("/api/users", userRoutes);
 
 // app.all("*", (req, res, next) => {
 //   next(new ExpressError("Page Not Found", 404));

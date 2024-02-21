@@ -5,7 +5,7 @@ import { TodoContext } from "../contexts/TodoContext";
 import axios from "axios";
 
 const ShowTodo = () => {
-  const { todos, dispatch } = useContext(TodoContext);
+  const { dispatch } = useContext(TodoContext);
   const [todo, setTodo] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const ShowTodo = () => {
       }
     };
     getTodo();
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   if (!todo) {
     return (

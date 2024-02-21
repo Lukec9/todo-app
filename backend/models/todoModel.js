@@ -15,6 +15,7 @@ const todoSchema = new mongoose.Schema(
     completed: {
       type: Boolean,
       default: false,
+      required: [true, "Must be provided todo completion"],
     },
   },
   { timestamps: true }
