@@ -61,6 +61,7 @@ const ShowTodo = () => {
         Created{" "}
         {formatDistanceToNow(new Date(todo.createdAt), { addSuffix: true })}
       </p>
+      <p>{todo.author?.username}</p>
       <form onSubmit={handleSubmit}>
         <button>Delete</button>
       </form>

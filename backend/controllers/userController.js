@@ -8,9 +8,10 @@ module.exports.register = async (req, res, next) => {
     req.login(registeredUser, err => {
       if (err) return next(err);
       // res.redirect("/campgrounds");
+      const { _id, username, email } = registeredUser;
       res.status(201).json({
         message: "User created successfully",
-        user: registeredUser,
+        user: { email, username, _id },
       });
     });
   } catch (e) {
@@ -21,7 +22,12 @@ module.exports.register = async (req, res, next) => {
 };
 
 module.exports.login = (req, res) => {
-  res.status(200).json({ message: "Login successful", user: req.user });
+  const { _id, username, email } = req.user;
+  res
+    .status(200)
+    .json({ message: "Login successful", user: { _id, username, email } });
+  // console.log(req.user, "in login");
+  // console.log(req.session.id, "in login");
 };
 
 module.exports.logout = (req, res) => {

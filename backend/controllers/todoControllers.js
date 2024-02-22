@@ -2,16 +2,33 @@ const todoModel = require("../models/todoModel");
 const mongoose = require("mongoose");
 
 module.exports.index = async (req, res) => {
-  const todos = await todoModel.find({});
-  res.status(200).json(todos);
+  if (!req.user) {
+    // console.log(req.user);
+    // console.log(req.session);
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  try {
+    // console.log(req.user);
+    // console.log(req.session);
+    const todos = await todoModel.find({ author: req.user._id });
+    // const todos = await todoModel.find({});
+    res.status(200).json(todos);
+  } catch (error) {
+    // console.log(req.user);
+    console.error("Error fetching todos:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 module.exports.createTodo = async (req, res) => {
   try {
+    // console.log(req.body);
     const todo = new todoModel(req.body);
     await todo.save();
     res.status(200).json(todo);
   } catch (error) {
+    // console.log(req.body);
     res.status(400).json({ error: error.message });
   }
 };
@@ -23,7 +40,9 @@ module.exports.getTodo = async (req, res) => {
     return res.status(404).json({ error: "No such todo" });
   }
 
-  const todo = await todoModel.findById(id);
+  const todo = await todoModel
+    .findById(id)
+    .populate({ path: "author", select: "username email _id" });
 
   if (!todo) {
     return res.status(404).json({ error: "No such todo" });

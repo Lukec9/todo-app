@@ -12,12 +12,18 @@ const userRoutes = require("./routes/userRoutes");
 const cors = require("cors");
 // const helmet = require("helmet");
 // const mongoSanitize = require("express-mongo-sanitize");
-
 const MongoStore = require("connect-mongo");
 const User = require("./models/userModel");
 
 const app = express();
-app.use(cors());
+
+const corsOptions = {
+  origin: "http://localhost:3001", // Replace with your frontend URL
+  credentials: true, // Allow credentials (cookies) to be included
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -74,6 +80,7 @@ app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
+
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 

@@ -17,6 +17,10 @@ const todoSchema = new mongoose.Schema(
       default: false,
       required: [true, "Must be provided todo completion"],
     },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );

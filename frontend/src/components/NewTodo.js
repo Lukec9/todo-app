@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { TodoContext } from "../contexts/TodoContext";
+import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
 
 const NewTodo = () => {
@@ -7,18 +8,22 @@ const NewTodo = () => {
   const [description, setDescription] = useState("");
   const [completed, setCompleted] = useState(false);
   const { dispatch } = useContext(TodoContext);
+  const { state } = useContext(AuthContext);
 
   const handleCheckboxChange = async e => {
     setCompleted(e.target.checked);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e, userId) => {
+    const author = userId;
+
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:3000/api/todos", {
         title,
         description,
         completed,
+        author,
       });
 
       if (response && response.data) {
@@ -36,7 +41,10 @@ const NewTodo = () => {
   return (
     <>
       <h2>New todo</h2>
-      <form className="todo-form" onSubmit={handleSubmit}>
+      <form
+        className="todo-form"
+        onSubmit={e => handleSubmit(e, state.user?._id)}
+      >
         <input
           type="text"
           placeholder="Title"

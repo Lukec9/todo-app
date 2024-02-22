@@ -30,7 +30,7 @@ function App() {
                 !state.isAuthenticated ? (
                   <LoginForm />
                 ) : (
-                  <Navigate to="/todos" />
+                  <Navigate to="/todos/new" />
                 )
               }
             />

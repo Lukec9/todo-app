@@ -1,12 +1,21 @@
 import { useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import axios from "axios";
 
 export default function RootLayout() {
   const { state, logout } = useContext(AuthContext);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout();
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/users/logout"
+      );
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+    }
   };
 
   return (
