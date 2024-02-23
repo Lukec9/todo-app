@@ -32,6 +32,9 @@ export default function RootLayout() {
           <NavLink to="todos/new" className="nav-link">
             New Todo
           </NavLink>
+          <NavLink to="dashboard" className="nav-link">
+            Dashboard
+          </NavLink>
         </nav>
         {state.isAuthenticated ? (
           <div>

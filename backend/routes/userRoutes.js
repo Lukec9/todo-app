@@ -19,4 +19,6 @@ router.post(
 
 router.get("/logout", users.logout);
 
+router.get("/:id/todos", users.getUserTodos);
+
 module.exports = router;

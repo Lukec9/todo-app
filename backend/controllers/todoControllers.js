@@ -12,7 +12,9 @@ module.exports.index = async (req, res) => {
   try {
     // console.log(req.user);
     // console.log(req.session);
-    const todos = await todoModel.find({ author: req.user._id });
+    const todos = await todoModel
+      .find({ author: req.user._id })
+      .sort({ createdAt: -1 });
     // const todos = await todoModel.find({});
     res.status(200).json(todos);
   } catch (error) {

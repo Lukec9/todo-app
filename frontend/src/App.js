@@ -10,6 +10,7 @@ import EditTodo from "./components/EditTodo";
 import LoginForm from "./components/LoginForm";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
+import UserDashboard from "./components/UserDashboard";
 
 function App() {
   const { state, login } = useContext(AuthContext);
@@ -64,6 +65,16 @@ function App() {
               path="/todos/:id/edit"
               element={
                 state.isAuthenticated ? <EditTodo /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="dashboard"
+              element={
+                state.isAuthenticated ? (
+                  <UserDashboard />
+                ) : (
+                  <Navigate to="/login" />
+                )
               }
             />
           </Route>
