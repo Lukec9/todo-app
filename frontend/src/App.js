@@ -9,6 +9,7 @@ import ShowTodo from "./components/ShowTodo";
 import EditTodo from "./components/EditTodo";
 import LoginForm from "./components/LoginForm";
 import Signup from "./components/Signup";
+import Home from "./components/Home";
 
 function App() {
   const { state, login } = useContext(AuthContext);
@@ -24,6 +25,7 @@ function App() {
       <TodoContextProvider>
         <Routes>
           <Route element={<RootLayout />}>
+            <Route index element={<Home />} />
             <Route
               path="login"
               element={
@@ -40,10 +42,30 @@ function App() {
                 !state.isAuthenticated ? <Signup /> : <Navigate to="/todos" />
               }
             />
-            <Route path="/todos" element={<IndexPage />} />
-            <Route path="/todos/new" element={<NewTodo />} />
-            <Route path="/todos/:id" element={<ShowTodo />} />
-            <Route path="/todos/:id/edit" element={<EditTodo />} />
+            <Route
+              path="/todos"
+              element={
+                state.isAuthenticated ? <IndexPage /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/todos/new"
+              element={
+                state.isAuthenticated ? <NewTodo /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/todos/:id"
+              element={
+                state.isAuthenticated ? <ShowTodo /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/todos/:id/edit"
+              element={
+                state.isAuthenticated ? <EditTodo /> : <Navigate to="/login" />
+              }
+            />
           </Route>
         </Routes>
       </TodoContextProvider>

@@ -1,4 +1,5 @@
 const todoModel = require("../models/todoModel");
+const User = require("../models/userModel");
 const mongoose = require("mongoose");
 
 module.exports.index = async (req, res) => {
@@ -23,8 +24,11 @@ module.exports.index = async (req, res) => {
 
 module.exports.createTodo = async (req, res) => {
   try {
-    // console.log(req.body);
+    // console.log(req.body.author);
     const todo = new todoModel(req.body);
+    const user = await User.findById(req.body.author);
+    user.todos.push(todo);
+    await user.save();
     await todo.save();
     res.status(200).json(todo);
   } catch (error) {
