@@ -1,3 +1,4 @@
+import "../dashboard.css";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
@@ -25,22 +26,24 @@ const UserDashboard = () => {
   }, [userID]);
 
   return (
-    <div>
+    <div className="dashboard-container">
       {userData ? (
         <div>
-          <h2>User Dashboard</h2>
-          <div>
-            <h3>Username: {state.user.username}</h3>
-            <p>Email: {state.user.email}</p>
+          <h2 className="dashboard-heading">User Dashboard</h2>
+          <div className="user-info">
+            <h3 className="user-heading">Welcome, {state.user.username}!</h3>
+            <p className="user-email">Email: {state.user.email}</p>
           </div>
-          <div>
-            <h3>Todos:</h3>
-            <ul>
+          <div className="todo-list">
+            <h3 className="todo-heading">Your Todos:</h3>
+            <ul className="todo-items">
               {userData.map(todo => (
-                <li key={todo._id}>
-                  <strong>{todo.title}</strong> - {todo.description}
-                  <br />
-                  <NavLink to={`/todos/${todo._id}`}>Go to todo</NavLink>
+                <li key={todo._id} className="todo-item">
+                  <strong className="todo-title">{todo.title}</strong> -{" "}
+                  <span className="todo-description">{todo.description}</span>
+                  <NavLink to={`/todos/${todo._id}`} className="todo-link">
+                    Go to todo
+                  </NavLink>
                 </li>
               ))}
             </ul>

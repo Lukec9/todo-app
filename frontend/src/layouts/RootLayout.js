@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
@@ -32,14 +32,18 @@ export default function RootLayout() {
           <NavLink to="todos/new" className="nav-link">
             New Todo
           </NavLink>
-          <NavLink to="dashboard" className="nav-link">
-            Dashboard
-          </NavLink>
+          {state.isAuthenticated && (
+            <NavLink to="dashboard" className="nav-link">
+              Dashboard
+            </NavLink>
+          )}
         </nav>
         {state.isAuthenticated ? (
-          <div>
+          <div className="user-section">
             <p>Welcome, {state.user.username}</p>
-            <button onClick={handleLogout}>Logout</button>
+            <button className="logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         ) : (
           <div className="login-signup">

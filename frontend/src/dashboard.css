@@ -1,0 +1,55 @@
+/* DASHBOARD */
+
+.dashboard-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-heading {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.user-heading {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.user-email {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.todo-heading {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.todo-items {
+  list-style-type: none;
+  padding: 0;
+}
+
+.todo-item {
+  margin-bottom: 15px;
+}
+
+.todo-title {
+  font-weight: bold;
+}
+
+.todo-description {
+  margin-right: 10px;
+}
+
+.todo-link {
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.todo-link:hover {
+  text-decoration: underline;
+}

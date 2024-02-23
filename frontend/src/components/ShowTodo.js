@@ -49,7 +49,7 @@ const ShowTodo = () => {
   };
 
   return (
-    <div className="todo-details">
+    <div className="show-todo">
       <h2>{todo.title}</h2>
       <p
         className={`todo-status ${todo.completed ? "completed" : "unfinished"}`}
@@ -62,10 +62,12 @@ const ShowTodo = () => {
         {formatDistanceToNow(new Date(todo.createdAt), { addSuffix: true })}
       </p>
       <p>{todo.author?.username}</p>
-      <form onSubmit={handleSubmit}>
-        <button>Delete</button>
+      <form className="delete-form" onSubmit={handleSubmit}>
+        <button className="btn">Delete</button>
       </form>
-      <Link to={`/todos/${id}/edit`}>Edit</Link>
+      <Link to={`/todos/${id}/edit`} className="btn">
+        Edit
+      </Link>
     </div>
   );
 };

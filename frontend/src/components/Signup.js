@@ -27,27 +27,50 @@ function Signup() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="text"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button type="submit">Sign up</button>
-    </form>
+    <div className="signup-form">
+      <h2>Sign Up</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Email"
+            className="signup-input"
+            style={{ width: "100%", padding: "12px", fontSize: "16px" }}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            placeholder="Username"
+            className="signup-input"
+            style={{ width: "100%", padding: "12px", fontSize: "16px" }}
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Password"
+            className="signup-input"
+            style={{ width: "100%", padding: "12px", fontSize: "16px" }}
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            className="btn"
+            style={{ width: "100%", padding: "12px", fontSize: "16px" }}
+          >
+            Sign up
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

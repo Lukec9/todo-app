@@ -39,11 +39,11 @@ const NewTodo = () => {
   };
 
   return (
-    <>
-      <h2>New todo</h2>
+    <div className="new-todo">
+      <h2>New Todo</h2>
       <form
-        className="todo-form"
         onSubmit={e => handleSubmit(e, state.user?._id)}
+        className="todo-form"
       >
         <input
           type="text"
@@ -67,11 +67,11 @@ const NewTodo = () => {
             onChange={handleCheckboxChange}
           />
         </label>
-        <button type="submit" className="todo-button">
+        <button type="submit" className="btn">
           Add Todo
         </button>
       </form>
-    </>
+    </div>
   );
 };
 

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 const IndexPage = () => {
   const { todos, dispatch } = useContext(TodoContext);
+
   useEffect(() => {
     const getTodos = async () => {
       try {
@@ -23,24 +24,24 @@ const IndexPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="todo-list">
+    <div className="index-page">
       {todos &&
-        todos.map(t => (
+        todos.map(todo => (
           <div
-            key={t._id}
-            className={`todo-item ${t.completed ? "completed" : ""}`}
+            key={todo._id}
+            className={`todo-item ${todo.completed ? "completed" : ""}`}
           >
             <div className="todo-header">
-              <Link to={`/todos/${t._id}`} className="todo-title">
-                {t.title}
+              <Link to={`/todos/${todo._id}`} className="todo-title">
+                {todo.title}
               </Link>
               <p className="todo-created-at">
-                {formatDistanceToNow(new Date(t.createdAt), {
+                {formatDistanceToNow(new Date(todo.createdAt), {
                   addSuffix: true,
                 })}
               </p>
             </div>
-            <p className="todo-description">{t.description}</p>
+            <p className="todo-description">{todo.description}</p>
           </div>
         ))}
     </div>
