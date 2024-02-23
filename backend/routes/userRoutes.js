@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const users = require("../controllers/userController");
+// const { validateUser } = require("../middleware");
 
 router.post("/register", users.register);
 

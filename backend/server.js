@@ -10,8 +10,8 @@ const LocalStrategy = require("passport-local");
 const todoRoutes = require("./routes/todoRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cors = require("cors");
-// const helmet = require("helmet");
-// const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
 const MongoStore = require("connect-mongo");
 const User = require("./models/userModel");
 
@@ -23,7 +23,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
+app.set("views", false);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -42,11 +42,11 @@ db.once("open", () => {
 
 // app.use(methodOverride("_method"));
 // app.use(express.static(path.join(__dirname, "public")));
-// app.use(
-//   mongoSanitize({
-//     replaceWith: "_",
-//   })
-// );
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+  })
+);
 const secret = process.env.SECRET || "thisshouldbeabettersecret!";
 
 const store = MongoStore.create({
@@ -76,7 +76,7 @@ const sessionConfig = {
 };
 
 app.use(session(sessionConfig));
-// app.use(helmet());
+app.use(helmet());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -94,7 +94,7 @@ app.use("/api/users", userRoutes);
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   if (!err.message) err.message = "Oh No, Something Went Wrong!";
-  res.status(statusCode).render("error", { err });
+  res.status(statusCode).json(err.message);
 });
 
 const port = process.env.PORT || 3000;
