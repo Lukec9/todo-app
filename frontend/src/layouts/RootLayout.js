@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import axios from "axios";
+import axios from "../axiosInstance";
+import { TodoContext } from "../contexts/TodoContext";
 
 export default function RootLayout() {
   const { state, logout } = useContext(AuthContext);
+  const { dispatch } = useContext(TodoContext);
 
   const handleLogout = async () => {
     logout();
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/users/logout"
-      );
-      console.log(response);
+      await axios.get("http://localhost:3000/api/users/logout");
+      dispatch({ type: "SET_TODOS", payload: {} });
     } catch (error) {
       console.error("Error fetching todos:", error);
     }

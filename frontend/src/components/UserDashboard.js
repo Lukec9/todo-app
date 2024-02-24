@@ -1,8 +1,8 @@
-import "../dashboard.css";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import axios from "axios";
 import { NavLink } from "react-router-dom";
+import axios from "../axiosInstance";
+import "../dashboard.css";
 
 const UserDashboard = () => {
   const [userData, setUserData] = useState(null);

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { TodoContext } from "../contexts/TodoContext";
-import axios from "axios";
+import axios from "../axiosInstance";
 
 const ShowTodo = () => {
   const { dispatch } = useContext(TodoContext);

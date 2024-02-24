@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
+import axios from "../axiosInstance";
 import { AuthContext } from "../contexts/AuthContext";
 
 function Signup() {

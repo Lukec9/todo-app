@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const users = require("../controllers/userController");
-// const { validateUser } = require("../middleware");
+const { isLoggedIn, isAuthorized } = require("../middleware");
 
 router.post("/register", users.register);
 
@@ -20,6 +20,6 @@ router.post(
 
 router.get("/logout", users.logout);
 
-router.get("/:id/todos", users.getUserTodos);
+router.get("/:id/todos", isLoggedIn, isAuthorized, users.getUserTodos);
 
 module.exports = router;

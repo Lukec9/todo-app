@@ -11,6 +11,7 @@ import LoginForm from "./components/LoginForm";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
 import UserDashboard from "./components/UserDashboard";
+import NotFound from "./components/NotFound";
 
 function App() {
   const { state, login } = useContext(AuthContext);
@@ -33,7 +34,7 @@ function App() {
                 !state.isAuthenticated ? (
                   <LoginForm />
                 ) : (
-                  <Navigate to="/todos/new" />
+                  <Navigate to="/todos" />
                 )
               }
             />
@@ -77,6 +78,7 @@ function App() {
                 )
               }
             />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </TodoContextProvider>

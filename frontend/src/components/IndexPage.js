@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from "react";
-import axios from "axios";
+import { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { TodoContext } from "../contexts/TodoContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import { Link } from "react-router-dom";
+import axios from "../axiosInstance";
 
 const IndexPage = () => {
   const { todos, dispatch } = useContext(TodoContext);
@@ -10,9 +10,7 @@ const IndexPage = () => {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/todos", {
-          withCredentials: true, // Include cookies with the request
-        });
+        const response = await axios.get("http://localhost:3000/api/todos");
         if (response && response.data) {
           dispatch({ type: "SET_TODOS", payload: response.data });
         }
@@ -25,7 +23,7 @@ const IndexPage = () => {
 
   return (
     <div className="index-page">
-      {todos &&
+      {todos && todos.length > 0 ? (
         todos.map(todo => (
           <div
             key={todo._id}
@@ -43,7 +41,14 @@ const IndexPage = () => {
             </div>
             <p className="todo-description">{todo.description}</p>
           </div>
-        ))}
+        ))
+      ) : (
+        <div className="no-todos">
+          <p>
+            No todos found. <Link to="/todos/new">Create a new todo</Link>.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,16 +1,16 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
+import axios from "../axiosInstance";
 
 function LoginForm() {
   const { login } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000/api",
-    withCredentials: true, // Include cookies
-  });
+  // const axiosInstance = axios.create({
+  //   baseURL: "http://localhost:3000/api",
+  //   withCredentials: true, // Include cookies
+  // });
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -18,7 +18,7 @@ function LoginForm() {
       if (!username || !password) {
         return;
       }
-      const response = await axiosInstance.post("/users/login", {
+      const response = await axios.post("/users/login", {
         username,
         password,
       });
