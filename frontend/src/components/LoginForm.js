@@ -17,7 +17,6 @@ function LoginForm() {
         username,
         password,
       });
-      console.log("Login successful:", response.data);
       login(response.data.user);
     } catch (error) {
       console.error("Login failed:", error.response.data);

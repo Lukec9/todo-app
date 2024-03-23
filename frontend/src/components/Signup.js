@@ -16,7 +16,6 @@ function Signup() {
         username,
         password,
       });
-      console.log("Login successful:", response.data);
       login(response.data.user); // Save user data to context
     } catch (error) {
       console.error("Login failed:", error.response.data);

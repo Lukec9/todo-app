@@ -27,8 +27,6 @@ module.exports.login = (req, res) => {
   res
     .status(200)
     .json({ message: "Login successful", user: { _id, username, email } });
-  // console.log(req.user, "in login");
-  // console.log(req.session.id, "in login");
 };
 
 module.exports.logout = (req, res) => {

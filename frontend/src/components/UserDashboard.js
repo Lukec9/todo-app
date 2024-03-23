@@ -13,7 +13,6 @@ const UserDashboard = () => {
     const getUserTodos = async () => {
       try {
         const response = await instance.get(`/api/users/${userID}/todos`);
-        // console.log(response.data);
         setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);

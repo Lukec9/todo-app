@@ -4,21 +4,15 @@ const mongoose = require("mongoose");
 
 module.exports.index = async (req, res) => {
   if (!req.user) {
-    // console.log(req.user);
-    // console.log(req.session);
     return res.status(401).json({ error: "Unauthorized" });
   }
 
   try {
-    // console.log(req.user);
-    // console.log(req.session);
     const todos = await todoModel
       .find({ author: req.user._id })
       .sort({ createdAt: -1 });
-    // const todos = await todoModel.find({});
     res.status(200).json(todos);
   } catch (error) {
-    // console.log(req.user);
     console.error("Error fetching todos:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -26,7 +20,6 @@ module.exports.index = async (req, res) => {
 
 module.exports.createTodo = async (req, res) => {
   try {
-    // console.log(req.body.author);
     const todo = new todoModel(req.body);
     const user = await User.findById(req.body.author);
     user.todos.push(todo);
@@ -34,7 +27,6 @@ module.exports.createTodo = async (req, res) => {
     await todo.save();
     res.status(200).json(todo);
   } catch (error) {
-    // console.log(req.body);
     res.status(400).json({ error: error.message });
   }
 };
