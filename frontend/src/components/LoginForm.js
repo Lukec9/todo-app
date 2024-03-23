@@ -7,18 +7,13 @@ function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // const axiosInstance = axios.create({
-  //   baseURL: "http://localhost:3000/api",
-  //   withCredentials: true, // Include cookies
-  // });
-
   const handleSubmit = async e => {
     e.preventDefault();
     try {
       if (!username || !password) {
         return;
       }
-      const response = await axios.post("/users/login", {
+      const response = await axios.post("/api/users/login", {
         username,
         password,
       });

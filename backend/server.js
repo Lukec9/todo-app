@@ -1,6 +1,4 @@
-// if (process.env.NODE_ENV !== "production") {
-//   require("dotenv").config();
-// }
+require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -14,7 +12,9 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const MongoStore = require("connect-mongo");
 const User = require("./models/userModel");
+const path = require("path");
 
+console.log(__dirname);
 const app = express();
 
 const corsOptions = {
@@ -27,7 +27,7 @@ app.set("views", false);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const dbUrl = "mongodb://localhost:27017/todo-app";
+const dbUrl = process.env.MONGO_URI || "mongodb://localhost:27017/todo-app";
 mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
@@ -36,12 +36,6 @@ db.once("open", () => {
   console.log("Database connected");
 });
 
-// app.engine("ejs", ejsMate);
-// app.set("view engine", "ejs");
-// app.set("views", path.join(__dirname, "views"));
-
-// app.use(methodOverride("_method"));
-// app.use(express.static(path.join(__dirname, "public")));
 app.use(
   mongoSanitize({
     replaceWith: "_",
@@ -86,6 +80,12 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use("/api/todos", todoRoutes);
 app.use("/api/users", userRoutes);
+
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
 
 // app.all("*", (req, res, next) => {
 //   next(new ExpressError("Page Not Found", 404));

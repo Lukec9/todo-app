@@ -11,7 +11,7 @@ export default function RootLayout() {
   const handleLogout = async () => {
     logout();
     try {
-      await axios.get("http://localhost:3000/api/users/logout");
+      await axios.get("/api/users/logout");
       dispatch({ type: "SET_TODOS", payload: {} });
     } catch (error) {
       console.error("Error fetching todos:", error);

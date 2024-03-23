@@ -10,7 +10,7 @@ const IndexPage = () => {
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/todos");
+        const response = await axios.get("/api/todos");
         if (response && response.data) {
           dispatch({ type: "SET_TODOS", payload: response.data });
         }

@@ -19,7 +19,7 @@ const NewTodo = () => {
 
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/todos", {
+      const response = await axios.post("/api/todos", {
         title,
         description,
         completed,

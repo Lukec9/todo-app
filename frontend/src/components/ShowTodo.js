@@ -13,9 +13,7 @@ const ShowTodo = () => {
   useEffect(() => {
     const getTodo = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/todos/${id}`
-        );
+        const response = await axios.get(`/api/todos/${id}`);
         if (response && response.data) {
           setTodo(response.data);
         }
@@ -38,9 +36,7 @@ const ShowTodo = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await axios.delete(
-        `http://localhost:3000/api/todos/${id}`
-      );
+      const response = await axios.delete(`/api/todos/${id}`);
       dispatch({ type: "DELETE_TODO", payload: response.data });
       navigate("/todos");
     } catch (error) {

@@ -11,14 +11,11 @@ function Signup() {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/users/register",
-        {
-          email,
-          username,
-          password,
-        }
-      );
+      const response = await axios.post("/api/users/register", {
+        email,
+        username,
+        password,
+      });
       console.log("Login successful:", response.data);
       login(response.data.user); // Save user data to context
     } catch (error) {

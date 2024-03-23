@@ -29,9 +29,10 @@ module.exports.isLoggedIn = (req, res, next) => {
 };
 
 module.exports.isAuthorized = (req, res, next) => {
-  if (req.user && req.params.id === req.user._id) {
+  if (req.user && req.params.id.toString() === req.user._id.toString()) {
     next();
   } else {
+    console.log(req.user._id, "yes", req.params.id, "the params");
     return res
       .status(403)
       .json({ error: "You are not authorized to access this resource." });

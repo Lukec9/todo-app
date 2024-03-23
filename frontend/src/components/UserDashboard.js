@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { NavLink } from "react-router-dom";
-import axios from "../axiosInstance";
+import instance from "../axiosInstance";
 import "../dashboard.css";
 
 const UserDashboard = () => {
@@ -12,9 +12,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const getUserTodos = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/users/${userID}/todos`
-        );
+        const response = await instance.get(`/api/users/${userID}/todos`);
         // console.log(response.data);
         setUserData(response.data);
       } catch (error) {

@@ -27,14 +27,11 @@ const EditTodo = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await axios.patch(
-        `http://localhost:3000/api/todos/${id}`,
-        {
-          title,
-          description,
-          completed,
-        }
-      );
+      const response = await axios.patch(`/api/todos/${id}`, {
+        title,
+        description,
+        completed,
+      });
 
       if (response && response.data) {
         dispatch({ type: "UPDATE_TODO", payload: response.data });
