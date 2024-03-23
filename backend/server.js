@@ -17,7 +17,7 @@ const path = require("path");
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:3001", // Replace with your frontend URL
+  origin: "https://todo-app-81lx.onrender.com/", // Replace with your frontend URL
   credentials: true, // Allow credentials (cookies) to be included
 };
 
