@@ -1,0 +1,20 @@
+{
+  "name": "project-root",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "NODE_ENV=production node backend-ts/dist/server.js",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "npm install --prefix frontend-next && npm run build --prefix frontend-next",
+    "build:backend": "tsc"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.4",
+    "typescript": "^5.5.4"
+  }
+}

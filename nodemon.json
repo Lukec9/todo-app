@@ -1,0 +1,6 @@
+{
+  "watch": ["backend-ts/src"],
+  "ext": "ts",
+  "exec": "npm run build:backend && node backend-ts/dist/server.js",
+  "ignore": ["backend-ts/dist"]
+}
