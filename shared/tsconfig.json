@@ -1,21 +1,15 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": ".",
+    "target": "ES2023",
+    "module": "ES2022",
+    "rootDir": "./src",
     "outDir": "./dist",
     "declaration": true,
-    "module": "commonjs",
     "composite": true,
     "moduleResolution": "Node",
-    "target": "ES6",
-    "rootDir": "./src",
-    "paths": {
-      "@backend/*": ["../backend-ts/src/*"]  // Maps backend files to the dist output
-    }
+    "esModuleInterop": true,
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules"],
-  "files": [],
-  "references": [
-    { "path": "../backend-ts" }  // References the backend project
-  ]
+  "exclude": ["dist"]
 }

@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const passportLocalMongoose = require("passport-local-mongoose");
+import mongoose, { Schema, InferSchemaType } from "mongoose";
+import passportLocalMongoose from "passport-local-mongoose";
 
 const UserSchema = new Schema({
   email: {
@@ -18,4 +17,6 @@ const UserSchema = new Schema({
 
 UserSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model("User", UserSchema);
+export type User = InferSchemaType<typeof UserSchema>;
+
+export default mongoose.model("User", UserSchema);

@@ -1,15 +1,15 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response, NextFunction } from "express";
 import { default as mongoose } from "mongoose";
-import type { UserExtended } from "@shared/types.js"
 
 import User from "../models/user.model.js";
+import { UserExtended } from "../../../shared/dist/types.js";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, username, password } = req.body;
     const user = new User({ email, username });
     const registeredUser = await User.register(user, password);
-    req.login(registeredUser, err => {
+    req.login(registeredUser, (err) => {
       if (err) return next(err);
       // res.redirect("/campgrounds");
       const { _id, username, email } = registeredUser;
@@ -26,7 +26,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = (req: Request, res: Response) => {
-
   const { _id, username, email } = req.user as UserExtended;
   res
     .status(200)
@@ -63,5 +62,8 @@ const getUserTodos = async (req: Request, res: Response) => {
 };
 
 export default {
-  register, login, logout, getUserTodos
-}
+  register,
+  login,
+  logout,
+  getUserTodos,
+};

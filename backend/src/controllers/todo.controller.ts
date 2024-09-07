@@ -1,11 +1,11 @@
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
 import todoModel from "../models/todo.model.js";
-import type { Todo } from '@shared/types.js'
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
+import type { Todo } from "../../../shared/dist/types.js";
 
 const index = async (req: Request, res: Response) => {
-  const user = req.user
+  const user = req.user;
 
   if (!user) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -34,7 +34,6 @@ const createTodo = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });
-
     }
   }
 };
@@ -90,5 +89,9 @@ const deleteTodo = async (req: Request, res: Response) => {
 };
 
 export default {
-  index, createTodo, getTodo, editTodo, deleteTodo
-}
+  index,
+  createTodo,
+  getTodo,
+  editTodo,
+  deleteTodo,
+};
