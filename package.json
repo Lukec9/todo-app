@@ -6,7 +6,7 @@
     "dev": "NODE_ENV=development nodemon",
     "start": "NODE_ENV=production node backend/dist/server.js",
     "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "npm install --prefix frontend-next && npm run build --prefix frontend-next",
+    "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend",
     "build:backend": "cd backend && tsc --build",
     "build:shared": "cd shared && tsc --build"
   },

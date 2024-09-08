@@ -4,6 +4,8 @@ import passport from "passport";
 import users from "../controllers/user.controller.js";
 import { isLoggedIn, isCurrentUser } from "../middleware.js";
 
+router.get("/me", users.getMe);
+router.get("/verify-session", users.verifySession);
 router.post("/register", users.register);
 
 router.post(
@@ -18,7 +20,7 @@ router.post(
   users.login
 );
 
-router.get("/logout", users.logout);
+router.post("/logout", users.logout);
 
 router.get("/:id/todos", isLoggedIn, isCurrentUser, users.getUserTodos);
 

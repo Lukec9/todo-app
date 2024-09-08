@@ -14,4 +14,15 @@ export interface UserExtended extends User {
   __v?: number;
 }
 
-export type Todo = InferSchemaType<typeof todoModelSchema>;
+export type Todo = {
+  _id: ObjectId | string;
+  title: string;
+  description: string;
+  completed: boolean;
+  author: ObjectId | string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+export type TodoExtended = Todo & {
+  author: UserExtended;
+};

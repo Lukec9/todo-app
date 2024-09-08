@@ -32,10 +32,21 @@ const login = (req: Request, res: Response) => {
     .json({ message: "Login successful", user: { _id, username, email } });
 };
 
-const logout = (req: Request, res: Response) => {
-  req.logout(function (_) {
-    res.status(200).json("Logged out successfully");
-  });
+const logout = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    req.logout(function (err) {
+      if (err) return next(err);
+      req.session.destroy(function (err) {
+        if (err) return next(err);
+        res.status(200).json({ message: "Successfully logged out!" });
+      });
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({ error: err.message });
+      console.error("Error in logoutUser: ", err.message);
+    }
+  }
 };
 
 const getUserTodos = async (req: Request, res: Response) => {
@@ -61,9 +72,27 @@ const getUserTodos = async (req: Request, res: Response) => {
   }
 };
 
+const getMe = async (req: Request, res: Response) => {
+  if (req.isAuthenticated()) {
+    res.status(200).json(req.user);
+  } else {
+    res.status(401).send("Not authenticated");
+  }
+};
+
+const verifySession = (req: Request, res: Response) => {
+  if (req.isAuthenticated()) {
+    res.status(200).json({ valid: true });
+  } else {
+    res.status(401).json({ valid: false });
+  }
+};
+
 export default {
   register,
   login,
   logout,
   getUserTodos,
+  getMe,
+  verifySession,
 };

@@ -50,7 +50,7 @@ export const todoSchema = z.object({
     .min(1)
     .transform((value) => escapeHTML(value)), // Sanitize description
   completed: z.boolean(),
-  author: z.string(), // Assuming author is a string (ID of the user)
+  author: z.string().optional(), // Assuming author is a string (ID of the user)
 });
 
 // User Schema

@@ -3,6 +3,7 @@ import Todo from "./models/todo.model.js";
 import type { Todo as TodoType, UserExtended } from "../../shared/dist/types.js";
 import { todoSchema } from "../../shared/dist/schemas.js";
 import { ZodError } from "zod";
+import { ObjectId } from "mongoose";
 
 export const validateTodo = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,8 +35,8 @@ export const isAuthor = async (req: Request, res: Response, next: NextFunction) 
   if (todo === null) {
     return res.status(404).json({ message: "Todo not found" });
   }
-
-  if (!todo.author.equals(user._id.toString())) {
+  //@ts-expect-error it is an objectid
+  if (!todo.author.equals(user._id)) {
     return res
       .status(403)
       .json({ message: "You do not have permission to do that!" });
