@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthContext } from "@/contexts/AuthContext";
+import axios from "axios";
 import { useState } from "react";
 
 function Input({
@@ -55,7 +56,14 @@ export default function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(username, password);
+    fetch("http://localhost:5000/api/users/login", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    });
+    // login(username, password);
   };
 
   return (

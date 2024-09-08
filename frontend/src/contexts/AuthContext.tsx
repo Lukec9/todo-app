@@ -2,90 +2,65 @@
 
 import React, {
   createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
   useReducer,
+  ReactNode,
+  useContext,
+  useMemo,
+  useCallback,
+  useEffect,
 } from "react";
-import axios, { AxiosError } from "axios";
-import type { TodoExtended, UserExtended } from "../../../shared/dist/types";
+import type { TodoExtended, UserExtended } from "@shared/types";
+import {
+  fetchUser,
+  login as loginUser,
+  signup as signupUser,
+  logout as logoutUser,
+  getUserTodos,
+} from "@/actions/auth-actions";
 
-axios.defaults.withCredentials = true;
-
-const API_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000/api/users"
-    : "/api/users";
-interface AuthContextType {
-  state: AuthContextState;
-  login: (username: string, password: string) => void;
-  logout: () => void;
-  signup: (email: string, username: string, password: string) => void;
-  getUserTodos: (
-    id: string,
-    setUserTodos: React.Dispatch<React.SetStateAction<TodoExtended[] | null>>
-  ) => void;
-}
-
-interface AuthContextState {
+type AuthState = {
   user: UserExtended | null;
   loading: boolean;
-}
+};
 
-type ReducerAction =
+// Define the actions and their payloads
+type AuthAction =
   | { type: "LOGIN"; payload: UserExtended }
   | { type: "LOGOUT" }
-  | { type: "UPDATE_USER"; payload: Partial<UserExtended> }
   | { type: "SET_LOADING" }
   | { type: "STOP_LOADING" };
 
-const initialState: AuthContextState = {
-  user: null,
-  loading: true,
+// Define the context type
+type AuthContextType = {
+  state: AuthState;
+  login: (username: string, password: string) => Promise<void>;
+  signup: (email: string, username: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  getUserTodos: (id: string) => Promise<TodoExtended[]>;
+  user: UserExtended | null;
 };
 
-// Define action types
-const LOGIN = "LOGIN";
-const LOGOUT = "LOGOUT";
-const UPDATE_USER = "UPDATE_USER";
-const SET_LOADING = "SET_LOADING";
-const STOP_LOADING = "STOP_LOADING";
+export const AuthContext = createContext<AuthContextType | null>(null);
 
-// Reducer function
-const reducer = (
-  state: AuthContextState,
-  action: ReducerAction
-): AuthContextState => {
+export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
-    case LOGIN:
+    case "LOGIN":
       return {
         ...state,
         user: action.payload,
         loading: false,
       };
-    case LOGOUT:
+    case "LOGOUT":
       return {
-        ...state,
         user: null,
         loading: false,
       };
-    case UPDATE_USER:
-      return {
-        ...state,
-        //@ts-expect-error its setting evertyhing to be optiona
-        user: {
-          ...state.user,
-          ...action.payload,
-        },
-      };
-    case SET_LOADING:
+    case "SET_LOADING":
       return {
         ...state,
         loading: true,
       };
-    case STOP_LOADING:
+    case "STOP_LOADING":
       return {
         ...state,
         loading: false,
@@ -95,64 +70,56 @@ const reducer = (
   }
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const initialState: AuthState = {
+  user: null,
+  loading: false,
+};
 
-export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+// Create the provider component
+const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        dispatch({ type: SET_LOADING });
-        const response = await axios.get<UserExtended>(`${API_URL}/me`);
-        if (response.data) {
-          dispatch({ type: LOGIN, payload: response.data });
-        } else {
-          dispatch({ type: LOGOUT });
-        }
-      } catch (error) {
-        dispatch({ type: LOGOUT });
-      } finally {
-        dispatch({ type: STOP_LOADING });
+    const initializeUser = async () => {
+      dispatch({ type: "SET_LOADING" });
+      const user = await fetchUser();
+      if (user) {
+        dispatch({ type: "LOGIN", payload: user });
+      } else {
+        dispatch({ type: "LOGOUT" });
       }
+      dispatch({ type: "STOP_LOADING" });
     };
 
-    fetchUser();
+    initializeUser();
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {
     try {
-      dispatch({ type: SET_LOADING });
-      const res = await axios.post(`${API_URL}/login`, { username, password });
-      if (res && res.data) {
-        dispatch({ type: LOGIN, payload: res.data });
+      dispatch({ type: "SET_LOADING" });
+      const user = await loginUser(username, password);
+      if (user) {
+        dispatch({ type: "LOGIN", payload: user });
       }
     } catch (error) {
-      if (error instanceof AxiosError) {
-        throw new Error(error.response?.data.error);
-      }
+      console.error("Login error:", error);
     } finally {
-      dispatch({ type: STOP_LOADING });
+      dispatch({ type: "STOP_LOADING" });
     }
   }, []);
+
   const signup = useCallback(
     async (email: string, username: string, password: string) => {
       try {
-        dispatch({ type: SET_LOADING });
-        const res = await axios.post(`${API_URL}/register`, {
-          email,
-          username,
-          password,
-        });
-        if (res && res.data) {
-          dispatch({ type: LOGIN, payload: res.data.user });
+        dispatch({ type: "SET_LOADING" });
+        const user = await signupUser(email, username, password);
+        if (user) {
+          dispatch({ type: "LOGIN", payload: user });
         }
       } catch (error) {
-        if (error instanceof AxiosError) {
-          throw new Error(error.response?.data.error);
-        }
+        console.error("Signup error:", error);
       } finally {
-        dispatch({ type: STOP_LOADING });
+        dispatch({ type: "STOP_LOADING" });
       }
     },
     []
@@ -160,46 +127,43 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = useCallback(async () => {
     try {
-      dispatch({ type: SET_LOADING });
-      await axios.post(`${API_URL}/logout`);
-      dispatch({ type: LOGOUT });
+      dispatch({ type: "SET_LOADING" });
+      await logoutUser();
+      dispatch({ type: "LOGOUT" });
     } catch (error) {
-      // Handle error if needed
+      console.error("Logout error:", error);
     } finally {
-      dispatch({ type: STOP_LOADING });
+      dispatch({ type: "STOP_LOADING" });
     }
   }, []);
 
-  const getUserTodos = useCallback(
-    async (
-      id: string,
-      setUserTodos: React.Dispatch<React.SetStateAction<TodoExtended[] | null>>
-    ) => {
-      try {
-        const response = await axios.get(`${API_URL}/${id}/todos`);
-        setUserTodos(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    },
-    []
-  );
+  const getUserTodos = useCallback(async (id: string) => {
+    try {
+      return await getUserTodos(id);
+    } catch (error) {
+      console.error("Error fetching user todos:", error);
+      return [];
+    }
+  }, []);
 
   const contextValue = useMemo(
     () => ({
       state,
       login,
-      logout,
       signup,
+      logout,
       getUserTodos,
+      user: state.user,
     }),
-    [state, login, logout, signup, getUserTodos]
+    [state, login, signup, logout, getUserTodos]
   );
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
+
+export default AuthContextProvider;
 
 export const useAuthContext = (): AuthContextType => {
   const context = useContext(AuthContext);
@@ -208,5 +172,3 @@ export const useAuthContext = (): AuthContextType => {
   }
   return context;
 };
-
-export default AuthContextProvider;

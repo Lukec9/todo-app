@@ -1,35 +1,24 @@
-"use client";
-
-import { useAuthContext } from "@/contexts/AuthContext";
-import { TodoExtended } from "@shared/types";
+import { getTodos } from "@/actions/todo-actions";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-const UserDashboard = () => {
-  const {
-    state: { user },
-    getUserTodos,
-  } = useAuthContext();
-  const [userTodos, setUserTodos] = useState<TodoExtended[] | null>(null);
+export default async function UserDashboard() {
+  const userTodos = await getTodos();
+  console.log(userTodos);
 
-  useEffect(() => {
-    if (typeof user?._id === "string") {
-      getUserTodos(user?._id, setUserTodos);
-    }
-  }, [user, getUserTodos]);
-
-  if (!user) return;
+  if (!userTodos) return <p>Redirecting to login...</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      {userTodos ? (
+      {userTodos.length ? (
         <div>
           <h2 className="text-3xl font-bold mb-6">User Dashboard</h2>
           <div className="mb-8">
             <h3 className="text-2xl font-semibold mb-2">
-              Welcome, {user.username}!
+              Welcome, {userTodos[0].author.username}!
             </h3>
-            <p className="text-gray-700 text-lg">Email: {user.email}</p>
+            <p className="text-gray-700 text-lg">
+              Email: {userTodos[0].author.email}
+            </p>
           </div>
           <div>
             <h3 className="text-xl font-medium mb-4">Your Todos:</h3>
@@ -59,6 +48,4 @@ const UserDashboard = () => {
       )}
     </div>
   );
-};
-
-export default UserDashboard;
+}

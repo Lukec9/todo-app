@@ -3,33 +3,32 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import LocalStrategy from "passport-local";
-import MongoStore, { } from "connect-mongo";
+import MongoStore from "connect-mongo";
 import session, { SessionOptions } from "express-session";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import cors from "cors";
 import path from "path";
 
-import connectToDB from './utils/connectToDB.js';
+import connectToDB from "./utils/connectToDB.js";
 
-import User from './models/user.model.js'
+import User from "./models/user.model.js";
 
-import userRoutes from './routes/user.routes.js'
-import todoRoutes from './routes/todo.routes.js'
+import userRoutes from "./routes/user.routes.js";
+import todoRoutes from "./routes/todo.routes.js";
 
-dotenv.config()
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
-
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV !== "production"
-        ? process.env.LOC_CLIENT_URL
-        : process.env.PROD_CLIENT_URL,
+    origin: "http://localhost:3000",
+    // process.env.NODE_ENV !== "production"
+    //   ? process.env.LOC_CLIENT_URL
+    //   : process.env.PROD_CLIENT_URL,
     credentials: true,
   })
 );
@@ -53,7 +52,6 @@ store.on("error", function (e) {
   console.log("SESSION STORE ERROR", e);
 });
 
-
 const sessionConfig: SessionOptions = {
   store,
   name: "session",
@@ -70,7 +68,7 @@ const sessionConfig: SessionOptions = {
 };
 
 app.use(session(sessionConfig));
-app.use(helmet())
+app.use(helmet());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -79,11 +77,10 @@ passport.use(new LocalStrategy.Strategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+connectToDB();
 
-connectToDB()
-
-app.use('/api/users', userRoutes)
-app.use('/api/todos', todoRoutes)
+app.use("/api/users", userRoutes);
+app.use("/api/todos", todoRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));

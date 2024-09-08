@@ -20,8 +20,8 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     });
   } catch (e) {
     // res.redirect("register");
-    console.error(e); // Log the error for debugging
-    res.status(500).json({ error: "Internal Server Error" }); // Send a meaningful error response
+    console.error(e);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -57,7 +57,13 @@ const getUserTodos = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await User.findById(id).select("todos").populate("todos");
+    const user = await User.findById(id).populate({
+      path: "todos",
+      populate: {
+        path: "author",
+        select: "email username",
+      },
+    });
 
     if (!user) {
       return res.status(404).json({ error: "No such user" });
@@ -78,6 +84,10 @@ const getMe = async (req: Request, res: Response) => {
   } else {
     res.status(401).send("Not authenticated");
   }
+  // res.cookie("hello", "not working", {
+  //   httpOnly: true,
+  // });
+  // res.json("did yo uget it");
 };
 
 const verifySession = (req: Request, res: Response) => {
