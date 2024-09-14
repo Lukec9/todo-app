@@ -1,51 +1,79 @@
-import { getTodos } from "@/actions/todo-actions";
+"use client";
+
+import { getUserTodos } from "@/actions/auth-actions";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { TodoExtended } from "@shared/types";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import Loading from "../loading";
+import Image from "next/image";
 
-export default async function UserDashboard() {
-  const userTodos = await getTodos();
-  console.log(userTodos);
+export default function UserDashboard() {
+  const [userTodos, setUserTodos] = useState<TodoExtended[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const {
+    state: { user },
+  } = useAuthContext();
 
-  if (!userTodos) return <p>Redirecting to login...</p>;
+  useEffect(() => {
+    const getTodos = async () => {
+      setLoading(true);
+      if (typeof user?._id === "string") {
+        const res = await getUserTodos(user?._id);
+        setUserTodos(res);
+        setLoading(false);
+      }
+    };
+    getTodos();
+  }, [user?._id]);
+
+  // if (loading && !userTodos) return <LoadingSpinner />;
+  if (!loading && !userTodos) return <p>User has not made any todos</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {userTodos.length ? (
+    <div className="max-w-5xl mx-auto p-6 space-y-12 bg-gray-900  shadow-md text-white">
+      <div className="flex items-center space-x-4">
+        <Image
+          src="https://avatars.githubusercontent.com/u/443278?v=4"
+          alt="Avatar"
+          width={48}
+          height={48}
+          className="w-12 h-12 rounded-full"
+        />
         <div>
-          <h2 className="text-3xl font-bold mb-6">User Dashboard</h2>
-          <div className="mb-8">
-            <h3 className="text-2xl font-semibold mb-2">
-              Welcome, {userTodos[0].author.username}!
-            </h3>
-            <p className="text-gray-700 text-lg">
-              Email: {userTodos[0].author.email}
-            </p>
-          </div>
-          <div>
-            <h3 className="text-xl font-medium mb-4">Your Todos:</h3>
-            <ul className="space-y-4">
-              {userTodos.map((todo) => (
-                <li
-                  key={todo._id.toString()}
-                  className="flex justify-between items-center"
-                >
+          <h3 className="text-2xl font-semibold">{user?.username}</h3>
+          <p className="text-gray-300">{user?.email}</p>
+        </div>
+      </div>
+      {userTodos?.length && (
+        <div>
+          <h3 className="text-4xl font-semibold  text-emerald-500">Your Todos:</h3>
+          <ul className="space-y-4 mt-4">
+            {userTodos.map((todo) => (
+              <li
+                key={todo._id.toString()}
+                className="bg-gray-800 p-4 rounded-lg shadow-md"
+              >
+                <div className="flex items-center justify-between">
                   <div>
-                    <strong className="font-bold">{todo.title}</strong> -{" "}
-                    <span className="text-gray-600">{todo.description}</span>
+                    <h4 className="text-lg text-emerald-400 font-semibold">
+                      {todo.title}
+                    </h4>
+                    <p className="text-gray-300">{todo.description}</p>
                   </div>
                   <Link
                     href={`/todos/${todo._id}`}
-                    className="text-blue-500 hover:underline text-sm"
+                    className="text-emerald-400 hover:underline text-sm"
                   >
                     Go to todo
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
-      ) : (
-        <p>User has not made any todos...</p>
       )}
+      {loading && <Loading />}
     </div>
   );
 }

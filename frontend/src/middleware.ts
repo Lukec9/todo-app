@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import axiosInstance from "./utils/axiosInstance";
-import axios from "axios";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -13,14 +12,7 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    const response = await axios.get(
-      `http://localhost:5000/api/users/verify-session`,
-      {
-        headers: {
-          Cookie: req.headers.get("cookie") || "",
-        },
-      }
-    );
+    const response = await axiosInstance.get(`/users/verify-session`);
 
     const user = response.data;
 
@@ -36,7 +28,6 @@ export async function middleware(req: NextRequest) {
 
     return NextResponse.next();
   } catch (error) {
-    console.log(error.response?.data, "is verified");
     if (!isOnAuthRoute) {
       return NextResponse.redirect(new URL("/login", req.url));
     }

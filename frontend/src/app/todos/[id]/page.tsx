@@ -1,31 +1,10 @@
-//TOOD
-"use client";
-
-import { useTodoContext } from "@/contexts/TodoContext";
-import { TodoExtended } from "@shared/types";
+import { deleteTodo, getTodo } from "@/actions/todo-actions";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
-const TodoPage = ({ params }: { params: { id: string } }) => {
-  const { getTodo, deleteTodo } = useTodoContext();
-  const router = useRouter();
-  const [todo, setTodo] = useState<TodoExtended | null>(null);
+export default async function TodoPage({ params }: { params: { id: string } }) {
   const { id } = params;
-
-  useEffect(() => {
-    const fetchTodo = async () => {
-      if (id) {
-        try {
-          const fetchedTodo = await getTodo(id);
-          setTodo(fetchedTodo);
-        } catch (error) {
-          console.error("Error fetching todo:", error);
-        }
-      }
-    };
-    fetchTodo();
-  }, [id, getTodo]);
+  const todo = await getTodo(id);
 
   if (!todo) {
     return (
@@ -36,52 +15,47 @@ const TodoPage = ({ params }: { params: { id: string } }) => {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      deleteTodo(id);
-      router.push("/todos");
-    } catch (error) {
-      console.error("Failed to delete todo", error);
-    }
-  };
-
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-4">{todo.title}</h2>
-      <p
-        className={`${
-          todo.completed ? "text-green-500" : "text-red-500"
-        } font-medium mb-2`}
-      >
-        {todo.completed ? "Completed" : "To finish"}
-      </p>
-      <p className="text-gray-600 mb-4">{todo.description}</p>
-      <p className="text-sm text-gray-500 mb-4">
-        Created{" "}
-        {new Date(todo.createdAt).toLocaleDateString("en-Us", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        })}
-      </p>
-      <p className="text-sm text-gray-500 mb-6">{todo.author?.username}</p>
-      <form className="mb-4" onSubmit={handleSubmit}>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-        >
-          Delete
-        </button>
-      </form>
-      <Link
-        href={`/todos/${id}/edit`}
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-      >
-        Edit
-      </Link>
+    <div className="flex flex-col items-center justify-center ">
+      <div className="max-w-2xl mx-auto p-6 w-[95%]  border border-emerald-500 shadow-md rounded-lg mt-10 space-y-2">
+        <h1 className="text-4xl font-bold text-emerald-500 ">{todo.title}</h1>
+        <p className="text-2xl font-semibold text-emerald-500  text-black/85">
+          {todo.completed ? "Completed" : "To complete"}
+        </p>
+        <p className="text-xl text-emerald-400 ">{todo.description}</p>
+        <p className="text-base text-emerald-300 ">
+          Created{" "}
+          {new Date(todo.createdAt).toLocaleDateString("en-Us", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}
+        </p>
+        <div className="flex flex-col gap-y-3">
+          <Link
+            aria-label="Edit Todo Button"
+            href={`/todos/${id}/edit`}
+            className="px-4 py-2 max-w-min rounded-md bg-emerald-600 text-white hover:bg-emerald-700"
+          >
+            Edit
+          </Link>
+          <form
+            className=""
+            action={async () => {
+              "use server";
+              await deleteTodo(id);
+              redirect("/todos");
+            }}
+          >
+            <button
+              type="submit"
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default TodoPage;
+}

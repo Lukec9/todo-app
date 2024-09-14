@@ -3,7 +3,6 @@ import Todo from "./models/todo.model.js";
 import type { Todo as TodoType, UserExtended } from "../../shared/dist/types.js";
 import { todoSchema } from "../../shared/dist/schemas.js";
 import { ZodError } from "zod";
-import { ObjectId } from "mongoose";
 
 export const validateTodo = (req: Request, res: Response, next: NextFunction) => {
   try {

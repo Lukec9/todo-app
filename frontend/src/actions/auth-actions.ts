@@ -16,19 +16,21 @@ export async function fetchUser() {
   }
 }
 
-export async function login(username: string, password: string) {
-  try {
-    const response = await axiosInstance.post("/users/login", {
-      username,
-      password,
-    });
-    return response.data.user;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      console.error("Login error:", error.response?.data);
-    }
-  }
-}
+// export async function login(username: string, password: string) {
+//   "use client";
+//   try {
+//     const response = await axiosInstance.post("/users/login", {
+//       username,
+//       password,
+//     });
+
+//     return response.data.user;
+//   } catch (error) {
+//     if (error instanceof AxiosError) {
+//       console.error("Login error:", error.response?.data);
+//     }
+//   }
+// }
 
 export async function signup(email: string, username: string, password: string) {
   try {

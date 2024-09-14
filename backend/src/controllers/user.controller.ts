@@ -59,10 +59,6 @@ const getUserTodos = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(id).populate({
       path: "todos",
-      populate: {
-        path: "author",
-        select: "email username",
-      },
     });
 
     if (!user) {
@@ -84,10 +80,6 @@ const getMe = async (req: Request, res: Response) => {
   } else {
     res.status(401).send("Not authenticated");
   }
-  // res.cookie("hello", "not working", {
-  //   httpOnly: true,
-  // });
-  // res.json("did yo uget it");
 };
 
 const verifySession = (req: Request, res: Response) => {

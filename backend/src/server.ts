@@ -25,10 +25,10 @@ const __dirname = path.resolve();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    // process.env.NODE_ENV !== "production"
-    //   ? process.env.LOC_CLIENT_URL
-    //   : process.env.PROD_CLIENT_URL,
+    origin:
+      process.env.NODE_ENV === "development"
+        ? process.env.LOC_CLIENT_URL
+        : process.env.PROD_CLIENT_URL,
     credentials: true,
   })
 );

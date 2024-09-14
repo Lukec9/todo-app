@@ -3,6 +3,7 @@
 import axiosInstance from "@/utils/axiosInstance";
 import type { Todo, TodoExtended } from "@shared/types";
 import { AxiosError } from "axios";
+import { revalidatePath } from "next/cache";
 
 export async function getTodos(): Promise<TodoExtended[]> {
   try {
@@ -19,6 +20,7 @@ export async function getTodos(): Promise<TodoExtended[]> {
 export async function createTodo(todo: Omit<Todo, "_id">): Promise<Todo | null> {
   try {
     const response = await axiosInstance.post(`/todos`, todo);
+    revalidatePath("/todos");
     return response.data;
   } catch (error) {
     console.error("Failed to create todo:", error);

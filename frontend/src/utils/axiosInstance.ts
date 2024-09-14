@@ -6,13 +6,12 @@ const API_URL =
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Ensure cookies are sent with requests
+  withCredentials: true,
+  timeout: 15000,
 });
 
-// Add a request interceptor to include cookies
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Extract cookies and format them
     const cookieStore = cookies();
     const allCookies = cookieStore.getAll();
     const cookieHeader = allCookies

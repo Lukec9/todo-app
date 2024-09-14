@@ -1,30 +1,33 @@
 "use client";
 
 import { useAuthContext } from "@/contexts/AuthContext";
-import axios from "axios";
-import { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
 
-function Input({
-  type,
-  value,
-  onChange,
-  placeholder,
-}: {
-  type: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-}) {
-  return (
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className="w-full p-3 text-lg border rounded-md mb-4 focus:ring-2 focus-within:outline-none focus:ring-green-400"
-    />
-  );
-}
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  (
+    { type = "text", value, onChange, placeholder, className = "", ...props },
+    ref
+  ) => {
+    return (
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        ref={ref}
+        placeholder={placeholder}
+        className={`w-full p-3 text-lg border rounded-md mb-4 focus:ring-2 focus-within:outline-none focus:ring-green-400 ${className}`}
+        {...props}
+      />
+    );
+  }
+);
+Input.displayName = "Input";
 
 function Button({
   type,
@@ -46,45 +49,51 @@ function Button({
   );
 }
 
+const loginSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
 export default function LoginForm() {
+  const router = useRouter();
   const {
     login,
     state: { loading },
   } = useAuthContext();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetch("http://localhost:5000/api/users/login", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-    });
-    // login(username, password);
-  };
+  const {
+    register,
+    getValues,
+    trigger,
+    formState: { errors },
+  } = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+  });
 
   return (
     <div className="login-form max-w-md mx-auto p-6 bg-white shadow-lg rounded-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form
+        action={async () => {
+          const result = await trigger();
+          if (!result) return;
+
+          const data = getValues();
+
+          await login(data.username, data.password);
+          router.push("/");
+        }}
+      >
         <div>
-          <Input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-          />
+          <Input type="text" {...register("username")} placeholder="Username" />
+          {errors.username && (
+            <p className="text-red-500 text-sm">{errors.username.message}</p>
+          )}
         </div>
         <div>
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-          />
+          <Input type="password" {...register("password")} placeholder="Password" />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
         </div>
         <div>
           <Button disabled={loading} type="submit">

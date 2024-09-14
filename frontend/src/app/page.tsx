@@ -4,8 +4,8 @@ export default function Home() {
   return (
     <div
       className="flex justify-center items-center h-screen bg-gradient-to-br 
-    from-gray-900 via-green-900
-     to-emerald-900"
+    from-gray-900 via-emerald-800
+     to-gray-950"
     >
       <div className="text-center max-w-lg p-5 text-white">
         <h1 className="text-4xl mb-5">Welcome to the Todo App!</h1>
