@@ -16,6 +16,9 @@ import User from "./models/user.model.js";
 
 import userRoutes from "./routes/user.routes.js";
 import todoRoutes from "./routes/todo.routes.js";
+import csrfRoutes from "./routes/csrf.routes.js";
+
+import { createCsrfToken, verifyCsrfTokenOnRoutes } from "./middleware.js";
 
 dotenv.config();
 
@@ -69,6 +72,8 @@ const sessionConfig: SessionOptions = {
 
 app.use(session(sessionConfig));
 app.use(helmet());
+app.use(createCsrfToken);
+app.use(verifyCsrfTokenOnRoutes);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -81,6 +86,7 @@ connectToDB();
 
 app.use("/api/users", userRoutes);
 app.use("/api/todos", todoRoutes);
+app.use("/api", csrfRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));

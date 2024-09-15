@@ -88,7 +88,18 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "STOP_LOADING" });
     };
 
+    const getCsrfToken = async () => {
+      try {
+        await axios.get("http://localhost:5000/api/csrf-token", {
+          withCredentials: true,
+        });
+      } catch (error) {
+        console.error("CSRF token error:", error);
+      }
+    };
+
     initializeUser();
+    getCsrfToken();
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {

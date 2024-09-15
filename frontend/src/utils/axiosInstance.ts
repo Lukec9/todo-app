@@ -18,9 +18,13 @@ axiosInstance.interceptors.request.use(
       .map((cookie) => `${cookie.name}=${cookie.value}`)
       .join("; ");
 
-    // Add cookies to the request headers
     if (config.headers) {
       config.headers["Cookie"] = cookieHeader;
+
+      const csrfToken = cookieStore.get("csrfToken")?.value;
+      if (csrfToken) {
+        config.headers["X-CSRF-Token"] = csrfToken;
+      }
     }
 
     return config;

@@ -4,23 +4,13 @@ import passport from "passport";
 import users from "../controllers/user.controller.js";
 import { isLoggedIn, isCurrentUser } from "../middleware.js";
 
-router.get("/me", users.getMe);
-router.get("/verify-session", users.verifySession);
+router.get("/me", isLoggedIn, users.getMe);
+router.get("/verify-session", isLoggedIn, users.verifySession);
 router.post("/register", users.register);
 
-router.post(
-  "/login",
-  passport.authenticate(
-    "local"
-    // {
-    //   failureFlash: true,
-    //   failureRedirect: "/login",
-    // }
-  ),
-  users.login
-);
+router.post("/login", passport.authenticate("local"), users.login);
 
-router.post("/logout", users.logout);
+router.post("/logout", isLoggedIn, users.logout);
 
 router.get("/:id/todos", isLoggedIn, isCurrentUser, users.getUserTodos);
 

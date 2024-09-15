@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import Todo from "./models/todo.model.js";
-import type { Todo as TodoType, UserExtended } from "../../shared/dist/types.js";
-import { todoSchema } from "../../shared/dist/schemas.js";
+import csrf from "csrf";
 import { ZodError } from "zod";
+import Todo from "./models/todo.model.js";
+import { todoSchema } from "../../shared/dist/schemas.js";
+import type { Todo as TodoType, UserExtended } from "../../shared/dist/types.js";
 
 export const validateTodo = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,3 +64,42 @@ export const isCurrentUser = (req: Request, res: Response, next: NextFunction) =
       .json({ error: "You are not authorized to access this resource." });
   }
 };
+
+const csrfTokens = new csrf();
+
+export function createCsrfToken(req: Request, res: Response, next: NextFunction) {
+  // @ts-ignore
+  if (!req.session.csrfToken) {
+    // @ts-ignore
+    req.session.csrfToken = csrfTokens.create(req.session.id);
+  }
+  next();
+}
+
+export function verifyCsrfToken(req: Request, res: Response, next: NextFunction) {
+  const csrfToken = req.headers["x-csrf-token"] || req.cookies.csrfToken;
+
+  if (!csrfToken) {
+    return res.status(403).json({ error: "CSRF token missing." });
+  }
+
+  if (csrfTokens.verify(req.session.id, csrfToken as string)) {
+    return next();
+  } else {
+    return res.status(403).json({ error: "Invalid CSRF token." });
+  }
+}
+
+export function verifyCsrfTokenOnRoutes(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const allowedMethods = ["POST", "PATCH", "DELETE"];
+
+  if (allowedMethods.includes(req.method)) {
+    verifyCsrfToken(req, res, next);
+  } else {
+    next();
+  }
+}
