@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import csrf from "csrf";
 import { ZodError } from "zod";
 import Todo from "./models/todo.model.js";
-import { todoSchema } from "../../shared/dist/schemas.js";
+import { todoSchema, userSchema } from "../../shared/dist/schemas.js";
 import type { Todo as TodoType, UserExtended } from "../../shared/dist/types.js";
 
 export const validateTodo = (req: Request, res: Response, next: NextFunction) => {
@@ -77,7 +77,7 @@ export function createCsrfToken(req: Request, res: Response, next: NextFunction)
 }
 
 export function verifyCsrfToken(req: Request, res: Response, next: NextFunction) {
-  const csrfToken = req.headers["x-csrf-token"] || req.cookies.csrfToken;
+  const csrfToken = req.headers["X-CSRF-Token"] || req.cookies.csrfToken;
 
   if (!csrfToken) {
     return res.status(403).json({ error: "CSRF token missing." });
@@ -103,3 +103,14 @@ export function verifyCsrfTokenOnRoutes(
     next();
   }
 }
+
+export const validateUser = (req: Request, res: Response, next: NextFunction) => {
+  const { email, username, password } = req.body;
+  const result = userSchema.safeParse({ email, username, password });
+
+  if (!result.success) {
+    return res.status(400).json({ error: result.error.message });
+  }
+
+  next();
+};

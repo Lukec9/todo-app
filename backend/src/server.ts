@@ -10,7 +10,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import cors from "cors";
 import path from "path";
 
-import connectToDB from "./utils/connectToDB.js";
+import connectToDB from "./db/connectToDB.js";
 
 import User from "./models/user.model.js";
 

@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { TodoContextProvider } from "@/contexts/TodoContext";
 import Header from "@/components/header";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <TodoContextProvider>
             <Header />
             {children}
+            <Toaster toastOptions={{ duration: 3000 }} />
           </TodoContextProvider>
         </AuthContextProvider>
       </body>

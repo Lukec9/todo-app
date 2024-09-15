@@ -1,14 +1,13 @@
 import express from "express";
 const router = express.Router();
-import passport from "passport";
 import users from "../controllers/user.controller.js";
-import { isLoggedIn, isCurrentUser } from "../middleware.js";
+import { isLoggedIn, isCurrentUser, validateUser } from "../middleware.js";
 
 router.get("/me", isLoggedIn, users.getMe);
 router.get("/verify-session", isLoggedIn, users.verifySession);
-router.post("/register", users.register);
+router.post("/register", validateUser, users.register);
 
-router.post("/login", passport.authenticate("local"), users.login);
+router.post("/login", users.login);
 
 router.post("/logout", isLoggedIn, users.logout);
 

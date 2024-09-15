@@ -3,6 +3,7 @@
 import axiosInstance from "@/utils/axiosInstance";
 import type { TodoExtended } from "@shared/types";
 import { AxiosError } from "axios";
+import { redirect } from "next/navigation";
 
 export async function fetchUser() {
   try {
@@ -32,24 +33,18 @@ export async function fetchUser() {
 //   }
 // }
 
-export async function signup(email: string, username: string, password: string) {
-  try {
-    const response = await axiosInstance.post("/users/register", {
-      email,
-      username,
-      password,
-    });
-    return response.data.user;
-  } catch (error) {
-    console.error("Signup error:", error);
-  }
-}
-
 export async function logout() {
+  let redirectTo = "/";
   try {
     await axiosInstance.post("/users/logout");
+    redirectTo = "/";
   } catch (error) {
-    console.error("Logout error:", error);
+    if (error instanceof AxiosError) {
+      console.error("Logout error:", error.response?.data);
+    }
+    redirectTo = "/dashboard";
+  } finally {
+    redirect(redirectTo);
   }
 }
 

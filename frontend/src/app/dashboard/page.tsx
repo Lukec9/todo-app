@@ -13,6 +13,7 @@ export default function UserDashboard() {
   const [loading, setLoading] = useState(true);
   const {
     state: { user },
+    logout,
   } = useAuthContext();
 
   useEffect(() => {
@@ -28,28 +29,37 @@ export default function UserDashboard() {
   }, [user?._id]);
 
   // if (loading && !userTodos) return <LoadingSpinner />;
-  if (!loading && !userTodos) return <p>User has not made any todos</p>;
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-12 bg-gray-900  shadow-md text-white">
-      <div className="flex items-center space-x-4">
-        <Image
-          src="https://avatars.githubusercontent.com/u/443278?v=4"
-          alt="Avatar"
-          width={48}
-          height={48}
-          className="w-12 h-12 rounded-full"
-        />
-        <div>
-          <h3 className="text-2xl font-semibold">{user?.username}</h3>
-          <p className="text-gray-300">{user?.email}</p>
+    <div className="max-w-5xl mx-auto p-6 space-y-12 h-screen bg-gray-900  shadow-md text-white lg:border-x lg:border-emerald-500">
+      <div className="flex justify-between items-center border-b border-emerald-500 pb-6">
+        <div className="flex items-center space-x-4">
+          <Image
+            src="https://avatars.githubusercontent.com/u/443278?v=4"
+            alt="Avatar"
+            width={48}
+            height={48}
+            className="w-12 h-12 rounded-full"
+          />
+          <div>
+            <h3 className="text-2xl font-semibold">{user?.username}</h3>
+            <p className="text-gray-300">
+              {loading ? "[Email Protected] " : user?.email}
+            </p>
+          </div>
         </div>
+        <button
+          onClick={logout}
+          className="border border-emerald-500 p-2 rounded-md text-emerald-500 hover:underline text-sm"
+        >
+          Logout
+        </button>
       </div>
-      {userTodos?.length && (
+      {userTodos?.length !== 0 && (
         <div>
           <h3 className="text-4xl font-semibold  text-emerald-500">Your Todos:</h3>
           <ul className="space-y-4 mt-4">
-            {userTodos.map((todo) => (
+            {userTodos?.map((todo) => (
               <li
                 key={todo._id.toString()}
                 className="bg-gray-800 p-4 rounded-lg shadow-md"
@@ -63,7 +73,7 @@ export default function UserDashboard() {
                   </div>
                   <Link
                     href={`/todos/${todo._id}`}
-                    className="text-emerald-400 hover:underline text-sm"
+                    className="text-emerald-400 hover:underline text-sm transition duration-300"
                   >
                     Go to todo
                   </Link>
@@ -72,6 +82,20 @@ export default function UserDashboard() {
             ))}
           </ul>
         </div>
+      )}
+
+      {!loading && !userTodos?.length && (
+        <>
+          <p className="text-center text-emerald-500">
+            You haven&apos;t created any todos yet
+          </p>
+          <Link
+            href="/todos/new"
+            className="block max-w-fit text-lg text-white mx-auto py-2 px-4 border border-emerald-500 rounded-lg hover:bg-emerald-500/50 focus:ring-2 ring-emerald-400 transition text-center focus-within:outline-none focus:ring-emerald-500 "
+          >
+            Create one now
+          </Link>
+        </>
       )}
       {loading && <Loading />}
     </div>

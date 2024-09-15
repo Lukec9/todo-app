@@ -84,35 +84,21 @@
 
 ::-webkit-scrollbar {
   width: 10px;
-  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #34d399;
+  @apply bg-emerald-500;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #059669;
-  border-radius: 10px;
+  @apply bg-gray-900;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #025846;
+  @apply bg-emerald-500;
 }
 
-::-moz-scrollbar {
-  width: 10px;
-}
-
-::-moz-scrollbar-track {
-  background: #34d399;
-}
-
-::-moz-scrollbar-thumb {
-  background-color: #059669;
-  border-radius: 10px;
-}
-
-::-moz-scrollbar-thumb:hover {
-  background-color: #025846;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #34d399 #1a202c;
 }

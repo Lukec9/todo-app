@@ -30,14 +30,14 @@ export default function Header() {
   } = useAuthContext();
 
   return (
-    <header className="flex relative top-0 justify-between h-20 items-center p-5 bg-emerald-600 text-white">
+    <header className="flex relative top-0 justify-between h-20 items-center p-5 bg-emerald-500 text-white">
       <div className="text-2xl min-w-fit">Todo App</div>
       <nav
         className={`${
           isMenuOpen
             ? "opacity-100 visible translate-y-0 top-20"
             : "opacity-0 invisible -translate-y-10 top-0"
-        } md:opacity-100 md:visible md:translate-y-0 md:flex md:relative fixed  left-0 right-0 bg-emerald-600 transition-all duration-300 z-10`}
+        } md:opacity-100 md:visible md:translate-y-0 md:flex md:relative fixed  left-0 right-0 bg-emerald-500 transition-all duration-300 z-10`}
       >
         <div className="flex flex-col md:flex-row justify-center text-lg pl-4 md:gap-4">
           <Link href="/" className="text-white p-2">

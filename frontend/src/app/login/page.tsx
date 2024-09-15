@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthContext } from "@/contexts/AuthContext";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -21,7 +21,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         onChange={onChange}
         ref={ref}
         placeholder={placeholder}
-        className={`w-full p-3 text-lg border rounded-md mb-4 focus:ring-2 focus-within:outline-none focus:ring-green-400 ${className}`}
+        className={`w-full p-3 text-lg border bg-transparent rounded-md mb-4 focus:ring-2 focus-within:outline-none focus:ring-green-400 border-emerald-500 text-white/75 ${className}`}
         {...props}
       />
     );
@@ -42,7 +42,7 @@ function Button({
     <button
       type={type}
       disabled={disabled}
-      className="w-full p-3 text-lg bg-emerald-500 text-white rounded-md  transition"
+      className="w-full bg-emerald-500 hover:bg-emerald-600 text-white focus:ring-2 focus-within:outline-none focus:ring-green-400 p-3 rounded-md"
     >
       {children}
     </button>
@@ -69,38 +69,70 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (loading) return;
+    const result = await trigger();
+    if (!result) return;
+
+    const data = getValues();
+
+    const { success, error: loginError } = await login(data.username, data.password);
+    if (!success) {
+      setError(loginError || "Something went wrong");
+      return;
+    }
+    setError(null);
+    router.push("/");
+  };
+
   return (
-    <div className="login-form max-w-md mx-auto p-6 bg-white shadow-lg rounded-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+    <main className="flex md:pt-24 pt-8 items-center justify-center overflow-hidden transition-all duration-300">
       <form
-        action={async () => {
-          const result = await trigger();
-          if (!result) return;
-
-          const data = getValues();
-
-          await login(data.username, data.password);
-          router.push("/");
-        }}
+        onSubmit={onSubmit}
+        className="max-w-xl w-full mx-auto p-6 space-y-4 bg-gray-900 shadow-md rounded-lg border border-emerald-500"
       >
-        <div>
-          <Input type="text" {...register("username")} placeholder="Username" />
+        <h2 className="text-3xl font-bold mb-6 text-center text-emerald-500">
+          Login
+        </h2>
+        <div className="space-y-2">
+          <label htmlFor="username" className="block text-sm font-medium text-white">
+            Username
+          </label>
+          <Input
+            type="text"
+            {...register("username")}
+            id="username"
+            placeholder="Username"
+          />
           {errors.username && (
             <p className="text-red-500 text-sm">{errors.username.message}</p>
           )}
         </div>
-        <div>
-          <Input type="password" {...register("password")} placeholder="Password" />
+        <div className="space-y-2">
+          <label htmlFor="password" className="block text-sm font-medium text-white">
+            Password
+          </label>
+          <Input
+            type="password"
+            {...register("password")}
+            id="password"
+            placeholder="Password"
+          />
           {errors.password && (
             <p className="text-red-500 text-sm">{errors.password.message}</p>
           )}
         </div>
-        <div>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <div className="mt-4">
           <Button disabled={loading} type="submit">
             Login
           </Button>
         </div>
       </form>
-    </div>
+    </main>
   );
 }

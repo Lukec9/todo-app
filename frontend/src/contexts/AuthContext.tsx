@@ -12,11 +12,12 @@ import React, {
 import type { TodoExtended, UserExtended } from "@shared/types";
 import {
   fetchUser,
-  signup as signupUser,
   logout as logoutUser,
   getUserTodos as getUsersTodos,
 } from "@/actions/auth-actions";
 import axios, { AxiosError } from "axios";
+import { getCsrfToken } from "@/utils/getCsrfToken";
+import toast from "react-hot-toast";
 
 type AuthState = {
   user: UserExtended | null;
@@ -31,8 +32,15 @@ type AuthAction =
 
 type AuthContextType = {
   state: AuthState;
-  login: (username: string, password: string) => Promise<void>;
-  signup: (email: string, username: string, password: string) => Promise<void>;
+  login: (
+    username: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  signup: (
+    email: string,
+    username: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   getUserTodos: (id: string) => Promise<TodoExtended[]>;
   user: UserExtended | null;
@@ -88,16 +96,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "STOP_LOADING" });
     };
 
-    const getCsrfToken = async () => {
-      try {
-        await axios.get("http://localhost:5000/api/csrf-token", {
-          withCredentials: true,
-        });
-      } catch (error) {
-        console.error("CSRF token error:", error);
-      }
-    };
-
     initializeUser();
     getCsrfToken();
   }, []);
@@ -105,41 +103,59 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback(async (username: string, password: string) => {
     try {
       dispatch({ type: "SET_LOADING" });
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/api/users/login",
-          {
-            username,
-            password,
-          },
-          { withCredentials: true }
-        );
 
-        dispatch({ type: "LOGIN", payload: response.data.user });
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          console.error("Login error:", error.response?.data);
-        }
-      }
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        { username, password },
+        { withCredentials: true }
+      );
+
+      dispatch({ type: "LOGIN", payload: response.data.user });
+      toast.success("Login successful");
+      return { success: true };
     } catch (error) {
-      console.error("Login error:", error);
+      if (error instanceof AxiosError) {
+        // toast.error("Login error: " + error.response?.data.error);
+        return { success: false, error: error.response?.data.error };
+      } else if (error instanceof Error) {
+        toast.error("Login error: " + error.message);
+        return { success: false, error: error.message };
+      }
+
+      return { success: false };
     } finally {
       dispatch({ type: "STOP_LOADING" });
+      await getCsrfToken();
     }
   }, []);
 
   const signup = useCallback(
     async (email: string, username: string, password: string) => {
+      dispatch({ type: "SET_LOADING" });
       try {
-        dispatch({ type: "SET_LOADING" });
-        const user = await signupUser(email, username, password);
-        if (user) {
-          dispatch({ type: "LOGIN", payload: user });
+        const response = await axios.post(
+          "http://localhost:5000/api/users/register",
+          { email, username, password },
+          { withCredentials: true }
+        );
+        if (response) {
+          dispatch({ type: "LOGIN", payload: response.data.user });
+          toast.success("Signup successful");
         }
+        return { success: true };
       } catch (error) {
-        console.error("Signup error:", error);
+        if (error instanceof AxiosError) {
+          // toast.error("Signup error: " + error.response?.data);
+          return { success: false, error: error.response?.data.error };
+        } else if (error instanceof Error) {
+          toast.error("Signup error: " + error.message);
+          return { success: false, error: error.message };
+        }
+
+        return { success: false };
       } finally {
         dispatch({ type: "STOP_LOADING" });
+        getCsrfToken();
       }
     },
     []
@@ -149,11 +165,17 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       dispatch({ type: "SET_LOADING" });
       await logoutUser();
+      toast.success("Logged out successfully");
       dispatch({ type: "LOGOUT" });
     } catch (error) {
-      console.error("Logout error:", error);
+      if (error instanceof AxiosError) {
+        toast.error("Logout error: " + error.response?.data);
+      } else if (error instanceof Error) {
+        toast.error("Logout error: " + error.message);
+      }
     } finally {
       dispatch({ type: "STOP_LOADING" });
+      await getCsrfToken();
     }
   }, []);
 
@@ -161,7 +183,12 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       return await getUsersTodos(id);
     } catch (error) {
-      console.error("Error fetching user todos:", error);
+      if (error instanceof AxiosError) {
+        toast.error("Error fetching user todos: " + error.response?.data);
+      } else if (error instanceof Error) {
+        toast.error("Error fetching user todos: " + error.message);
+      }
+
       return [];
     }
   }, []);

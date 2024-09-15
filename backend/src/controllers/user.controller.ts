@@ -3,33 +3,69 @@ import { default as mongoose } from "mongoose";
 
 import User from "../models/user.model.js";
 import { UserExtended } from "../../../shared/dist/types.js";
+import passport from "passport";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, username, password } = req.body;
+    const foundUser = await User.findOne({ $or: [{ email }, { username }] });
+
+    if (foundUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+    
+
     const user = new User({ email, username });
+
     const registeredUser = await User.register(user, password);
+
     req.login(registeredUser, (err) => {
       if (err) return next(err);
-      // res.redirect("/campgrounds");
+
       const { _id, username, email } = registeredUser;
-      res.status(201).json({
+
+      return res.status(201).json({
         message: "User created successfully",
         user: { email, username, _id },
       });
     });
   } catch (e) {
-    // res.redirect("register");
-    console.error(e);
-    res.status(500).json({ error: "Internal Server Error" });
+    if (e instanceof Error) {
+      return res.status(400).json({ error: e.message });
+    }
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-const login = (req: Request, res: Response) => {
-  const { _id, username, email } = req.user as UserExtended;
-  res
-    .status(200)
-    .json({ message: "Login successful", user: { _id, username, email } });
+const login = (req: Request, res: Response, next: NextFunction): void => {
+  passport.authenticate(
+    "local",
+    (err: Error | null, user: UserExtended | false, info: unknown) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        const message =
+          typeof info === "object" && info !== null && "message" in info
+            ? (info as { message: string }).message
+            : "Authentication failed";
+        return res.status(400).json({ error: message });
+      }
+
+      req.login(user, (err) => {
+        if (err) {
+          return next(err);
+        }
+
+        const { _id, username, email } = req.user as UserExtended;
+        return res.status(200).json({
+          message: "Login successful",
+          user: { _id, username, email },
+        });
+      });
+    }
+  )(req, res, next);
 };
 
 const logout = (req: Request, res: Response, next: NextFunction) => {

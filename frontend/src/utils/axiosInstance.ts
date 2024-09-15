@@ -13,15 +13,14 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const cookieStore = cookies();
-    const allCookies = cookieStore.getAll();
-    const cookieHeader = allCookies
-      .map((cookie) => `${cookie.name}=${cookie.value}`)
-      .join("; ");
+    const csrfToken = cookieStore.get("csrfToken")?.value;
 
     if (config.headers) {
-      config.headers["Cookie"] = cookieHeader;
+      config.headers["Cookie"] = cookieStore
+        .getAll()
+        .map((cookie) => `${cookie.name}=${cookie.value}`)
+        .join("; ");
 
-      const csrfToken = cookieStore.get("csrfToken")?.value;
       if (csrfToken) {
         config.headers["X-CSRF-Token"] = csrfToken;
       }
@@ -29,9 +28,7 @@ axiosInstance.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default axiosInstance;

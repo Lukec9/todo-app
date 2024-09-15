@@ -35,7 +35,7 @@ export default async function TodoPage({ params }: { params: { id: string } }) {
           <Link
             aria-label="Edit Todo Button"
             href={`/todos/${id}/edit`}
-            className="px-4 py-2 max-w-min rounded-md bg-emerald-600 text-white hover:bg-emerald-700"
+            className="px-4 py-2 max-w-min rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition"
           >
             Edit
           </Link>
@@ -49,7 +49,7 @@ export default async function TodoPage({ params }: { params: { id: string } }) {
           >
             <button
               type="submit"
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              className="px-4 py-2 bg-red-500  text-white rounded-md hover:bg-red-600"
             >
               Delete
             </button>

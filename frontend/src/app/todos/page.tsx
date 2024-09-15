@@ -6,10 +6,10 @@ export default async function TodosPage() {
 
   if (todos.length === 0) {
     return (
-      <div className="flex flex-col items-center text-center">
+      <div className="flex flex-col items-center text-center text-emerald-500 mt-16">
         <h2 className="text-4xl">You don&apos;t have any todos yet</h2>
-        <Link href="/todos/new">
-          <a className="text-emerald-700 underline">Create one now</a>
+        <Link className="text-emerald-700 underline" href="/todos/new">
+          Create one now
         </Link>
       </div>
     );
