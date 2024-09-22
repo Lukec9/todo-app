@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 const API_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5000/api"
-    : process.env.API_URL;
+    : process.env.NEXT_PUBLIC_API_URL;
 
 const fetchInstance = async (
   url: string,
