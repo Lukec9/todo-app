@@ -1,4 +1,8 @@
 "use client";
+const api =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000/api"
+    : process.env.API_URL;
 
 import React, {
   createContext,
@@ -15,7 +19,6 @@ import {
   logout as logoutUser,
   getUserTodos as getUsersTodos,
 } from "@/actions/auth-actions";
-import axios, { AxiosError } from "axios";
 import { getCsrfToken } from "@/utils/getCsrfToken";
 import toast from "react-hot-toast";
 
@@ -104,20 +107,26 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       dispatch({ type: "SET_LOADING" });
 
-      const response = await axios.post(
-        "http://localhost:5000/api/users/login",
-        { username, password },
-        { withCredentials: true }
-      );
+      const response = await fetch(`${api}/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+        credentials: "include",
+      });
 
-      dispatch({ type: "LOGIN", payload: response.data.user });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      const data = await response.json();
+      dispatch({ type: "LOGIN", payload: data.user });
       toast.success("Login successful");
       return { success: true };
     } catch (error) {
-      if (error instanceof AxiosError) {
-        // toast.error("Login error: " + error.response?.data.error);
-        return { success: false, error: error.response?.data.error };
-      } else if (error instanceof Error) {
+      if (error instanceof Error) {
         toast.error("Login error: " + error.message);
         return { success: false, error: error.message };
       }
@@ -133,21 +142,28 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     async (email: string, username: string, password: string) => {
       dispatch({ type: "SET_LOADING" });
       try {
-        const response = await axios.post(
-          "http://localhost:5000/api/users/register",
-          { email, username, password },
-          { withCredentials: true }
-        );
-        if (response) {
-          dispatch({ type: "LOGIN", payload: response.data.user });
+        const response = await fetch(`${api}/users/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, username, password }),
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
+
+        const data = await response.json();
+        if (data) {
+          dispatch({ type: "LOGIN", payload: data.user });
           toast.success("Signup successful");
         }
         return { success: true };
       } catch (error) {
-        if (error instanceof AxiosError) {
-          // toast.error("Signup error: " + error.response?.data);
-          return { success: false, error: error.response?.data.error };
-        } else if (error instanceof Error) {
+        if (error instanceof Error) {
           toast.error("Signup error: " + error.message);
           return { success: false, error: error.message };
         }
@@ -164,13 +180,16 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(async () => {
     try {
       dispatch({ type: "SET_LOADING" });
-      await logoutUser();
-      toast.success("Logged out successfully");
+      const res = await logoutUser();
+      if (res.error) {
+        toast.error(res.error);
+      } else if (res.data) {
+        toast.success("Logged out successfully");
+      }
+
       dispatch({ type: "LOGOUT" });
     } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error("Logout error: " + error.response?.data);
-      } else if (error instanceof Error) {
+      if (error instanceof Error) {
         toast.error("Logout error: " + error.message);
       }
     } finally {
@@ -183,9 +202,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       return await getUsersTodos(id);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error("Error fetching user todos: " + error.response?.data);
-      } else if (error instanceof Error) {
+      if (error instanceof Error) {
         toast.error("Error fetching user todos: " + error.message);
       }
 

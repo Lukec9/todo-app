@@ -4,7 +4,7 @@ import Link from "next/link";
 export default async function TodosPage() {
   const todos = await getTodos();
 
-  if (todos.length === 0) {
+  if (todos?.length === 0) {
     return (
       <div className="flex flex-col items-center text-center text-emerald-500 mt-16">
         <h2 className="text-4xl">You don&apos;t have any todos yet</h2>

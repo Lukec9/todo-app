@@ -1,5 +1,4 @@
-import { InferSchemaType, ObjectId } from "mongoose";
-import { todoModelSchema } from "./schemas";
+import { ObjectId } from "mongoose";
 export interface User {
   email: string;
   todos: ObjectId[];

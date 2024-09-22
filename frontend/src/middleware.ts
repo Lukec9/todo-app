@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-import axiosInstance from "./utils/axiosInstance";
+import fetchInstance from "./utils/fetchInstance";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -12,7 +12,7 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    const response = await axiosInstance.get(`/users/verify-session`);
+    const response = await fetchInstance(`/users/verify-session`);
 
     const user = response.data;
 

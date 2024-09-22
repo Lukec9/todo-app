@@ -1,17 +1,16 @@
-"use server";
-
-import axiosInstance from "@/utils/axiosInstance";
+import fetchInstance from "@/utils/fetchInstance";
 import type { Todo, TodoExtended } from "@shared/types";
-import { AxiosError } from "axios";
 import { revalidatePath } from "next/cache";
 
 export async function getTodos(): Promise<TodoExtended[]> {
   try {
-    const response = await axiosInstance.get(`/todos`);
+    const response = await fetchInstance(`/todos`, {
+      method: "GET",
+    });
     return response.data;
   } catch (error) {
-    if (error instanceof AxiosError) {
-      console.error("Error fetching todos:", error.response?.data);
+    if (error instanceof Error) {
+      console.error("Error fetching todos:", error.message);
     }
     return [];
   }
@@ -19,18 +18,26 @@ export async function getTodos(): Promise<TodoExtended[]> {
 
 export async function createTodo(todo: Omit<Todo, "_id">): Promise<Todo | null> {
   try {
-    const response = await axiosInstance.post(`/todos`, todo);
+    const response = await fetchInstance(`/todos`, {
+      method: "POST",
+      body: JSON.stringify(todo),
+    });
     revalidatePath("/todos");
     return response.data;
   } catch (error) {
-    console.error("Failed to create todo:", error);
+    console.error(
+      "Failed to create todo:",
+      error instanceof Error ? error.message : error
+    );
     return null;
   }
 }
 
 export async function getTodo(id: string): Promise<TodoExtended | null> {
   try {
-    const response = await axiosInstance.get(`/todos/${id}`);
+    const response = await fetchInstance(`/todos/${id}`, {
+      method: "GET",
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching todo:", error);
@@ -40,7 +47,10 @@ export async function getTodo(id: string): Promise<TodoExtended | null> {
 
 export async function deleteTodo(id: string): Promise<Todo | null> {
   try {
-    const response = await axiosInstance.delete(`/todos/${id}`);
+    const response = await fetchInstance(`/todos/${id}`, {
+      method: "DELETE",
+    });
+    revalidatePath("/todos");
     return response.data;
   } catch (error) {
     console.error("Error deleting todo:", error);
@@ -53,7 +63,11 @@ export async function editTodo(
   updatedTodo: { title: string; description: string; completed: boolean }
 ): Promise<Todo | null> {
   try {
-    const response = await axiosInstance.patch(`/todos/${id}`, updatedTodo);
+    const response = await fetchInstance(`/todos/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(updatedTodo),
+    });
+    revalidatePath("/todos");
     return response.data;
   } catch (error) {
     console.error("Error updating todo:", error);

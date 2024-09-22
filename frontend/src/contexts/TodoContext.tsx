@@ -73,10 +73,6 @@ const initialState: TodoState = {
 export const TodoContextProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(todoReducer, initialState);
 
-  useEffect(() => {
-    getTodos();
-  }, []);
-
   const getTodos = useCallback(async () => {
     try {
       const todos = await fetchTodos();
@@ -85,6 +81,9 @@ export const TodoContextProvider = ({ children }: { children: ReactNode }) => {
       console.error("Error fetching todos:", error);
     }
   }, []);
+  useEffect(() => {
+    getTodos();
+  }, [getTodos]);
 
   const createTodo = useCallback(async (todo: Omit<Todo, "_id">) => {
     try {

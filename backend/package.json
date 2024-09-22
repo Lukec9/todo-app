@@ -4,11 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development nodemon",
-    "start": "NODE_ENV=production node backend/dist/server.js",
-    "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend",
-    "build:backend": "cd backend && tsc --build",
-    "build:shared": "cd shared && tsc --build"
+    "start": "NODE_ENV=production node dist/server.js",
+    "build": "tsc --build",
+    "build:frontend": "npm run build --prefix ../frontend",
+    "build:shared": "cd ../shared && tsc --build"
   },
   "dependencies": {
     "connect-mongo": "^5.1.0",

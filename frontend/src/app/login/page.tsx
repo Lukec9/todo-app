@@ -73,8 +73,8 @@ export default function LoginForm() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (loading) return;
+
     const result = await trigger();
     if (!result) return;
 
@@ -128,8 +128,8 @@ export default function LoginForm() {
         </div>
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="mt-4">
-          <Button disabled={loading} type="submit">
-            Login
+          <Button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </Button>
         </div>
       </form>
