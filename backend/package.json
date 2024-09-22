@@ -7,7 +7,7 @@
     "start": "NODE_ENV=production node dist/server.js",
     "build": "npm install && npm run build:shared && tsc --build",
     "build:frontend": "npm run build --prefix ../frontend",
-    "build:shared": "npm install && cd ../shared && tsc --build"
+    "build:shared": "cd ../shared && npm install && tsc --build"
   },
   "dependencies": {
     "connect-mongo": "^5.1.0",
