@@ -9,7 +9,7 @@ router.get("/csrf-token", (req: Request, res: Response) => {
   res.cookie("csrfToken", csrfToken, {
     httpOnly: true,
     secure: false,
-    sameSite: "strict",
+    sameSite: "none",
   });
   res.json({ csrfToken: csrfToken });
 });
