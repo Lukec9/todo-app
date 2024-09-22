@@ -104,8 +104,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {
-    console.log(`Fetching URL: ${api}/users/login`);
-
     try {
       dispatch({ type: "SET_LOADING" });
 
@@ -120,7 +118,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
       if (!response.ok) {
         const error = await response.json();
-        console.log(error, "errori n response not ok");
         throw new Error(error.error);
       }
 
@@ -129,7 +126,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       toast.success("Login successful");
       return { success: true };
     } catch (error) {
-      console.log(error, "error in catch");
       if (error instanceof Error) {
         toast.error("Login error: " + error.message);
         return { success: false, error: error.message };
@@ -196,9 +192,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       if (error instanceof Error) {
         toast.error("Logout error: " + error.message);
       }
-    } finally {
-      dispatch({ type: "STOP_LOADING" });
-      await getCsrfToken();
     }
   }, []);
 

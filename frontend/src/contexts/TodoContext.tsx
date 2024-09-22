@@ -77,9 +77,7 @@ export const TodoContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       const todos = await fetchTodos();
       dispatch({ type: "SET_TODOS", payload: todos });
-    } catch (error) {
-      console.error("Error fetching todos:", error);
-    }
+    } catch (error) {}
   }, []);
   useEffect(() => {
     getTodos();
@@ -91,16 +89,13 @@ export const TodoContextProvider = ({ children }: { children: ReactNode }) => {
       if (newTodo) {
         dispatch({ type: "CREATE_TODO", payload: newTodo });
       }
-    } catch (error) {
-      console.error("Failed to create todo", error);
-    }
+    } catch (error) {}
   }, []);
 
   const getTodo = useCallback(async (id: string) => {
     try {
       return await fetchTodo(id);
     } catch (error) {
-      console.error("Error fetching todo:", error);
       return null;
     }
   }, []);
@@ -111,9 +106,7 @@ export const TodoContextProvider = ({ children }: { children: ReactNode }) => {
       if (deletedTodo) {
         dispatch({ type: "DELETE_TODO", payload: deletedTodo });
       }
-    } catch (error) {
-      console.error("Error deleting todo:", error);
-    }
+    } catch (error) {}
   }, []);
 
   const editTodo = useCallback(
@@ -126,9 +119,7 @@ export const TodoContextProvider = ({ children }: { children: ReactNode }) => {
         if (updated) {
           dispatch({ type: "UPDATE_TODO", payload: updated });
         }
-      } catch (error) {
-        console.error("Error updating todo:", error);
-      }
+      } catch (error) {}
     },
     []
   );

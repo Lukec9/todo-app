@@ -12,7 +12,9 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    const response = await fetchInstance(`/users/verify-session`);
+    const response = await fetchInstance(`/users/verify-session`, {
+      cache: "no-store",
+    });
 
     const user = response.data;
 

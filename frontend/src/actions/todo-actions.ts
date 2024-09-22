@@ -9,9 +9,6 @@ export async function getTodos(): Promise<TodoExtended[]> {
     });
     return response.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error fetching todos:", error.message);
-    }
     return [];
   }
 }
@@ -25,10 +22,6 @@ export async function createTodo(todo: Omit<Todo, "_id">): Promise<Todo | null> 
     revalidatePath("/todos");
     return response.data;
   } catch (error) {
-    console.error(
-      "Failed to create todo:",
-      error instanceof Error ? error.message : error
-    );
     return null;
   }
 }
@@ -40,7 +33,6 @@ export async function getTodo(id: string): Promise<TodoExtended | null> {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching todo:", error);
     return null;
   }
 }
@@ -53,7 +45,6 @@ export async function deleteTodo(id: string): Promise<Todo | null> {
     revalidatePath("/todos");
     return response.data;
   } catch (error) {
-    console.error("Error deleting todo:", error);
     return null;
   }
 }
@@ -70,7 +61,6 @@ export async function editTodo(
     revalidatePath("/todos");
     return response.data;
   } catch (error) {
-    console.error("Error updating todo:", error);
     return null;
   }
 }

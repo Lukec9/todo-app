@@ -15,10 +15,6 @@ export async function fetchUser() {
       return null;
     }
   } catch (error) {
-    console.error(
-      "Error fetching user:",
-      error instanceof Error ? error.message : error
-    );
     return null;
   }
 }
@@ -38,7 +34,6 @@ export async function login(username: string, password: string) {
       return response.error;
     }
   } catch (error) {
-    console.error("Login error:", error instanceof Error ? error.message : error);
     return null;
   }
 }
@@ -57,8 +52,8 @@ export async function logout() {
       return response;
     }
   } catch (error) {
-    console.error("Logout error:", error instanceof Error ? error.message : error);
     redirectTo = "/dashboard";
+    return { data: null, error: "Something went wrong" };
   } finally {
     redirect(redirectTo);
   }
@@ -75,10 +70,6 @@ export async function getUserTodos(userId: string): Promise<TodoExtended[]> {
       return response.error;
     }
   } catch (error) {
-    console.error(
-      "Error fetching user todos:",
-      error instanceof Error ? error.message : error
-    );
     return [];
   }
 }

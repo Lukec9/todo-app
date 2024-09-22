@@ -7,8 +7,9 @@ export const getCsrfToken = async () => {
   try {
     await fetch(`${api}/csrf-token`, {
       credentials: "include",
+      cache: "no-store",
     });
   } catch (error) {
-    console.error("CSRF token error:", error);
+    return Promise.reject(error);
   }
 };
