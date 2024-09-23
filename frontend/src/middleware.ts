@@ -7,8 +7,6 @@ export async function middleware(req: NextRequest) {
   const authRoutes = ["/login", "/signup"];
   const isOnAuthRoute = authRoutes.includes(pathname);
 
-  console.log(req.cookies, "the cookies");
-
   if (pathname === "/") {
     return NextResponse.next();
   }
@@ -19,9 +17,9 @@ export async function middleware(req: NextRequest) {
       cache: "no-store",
     });
 
-    const user = response.data;
+    const { valid } = response.data;
 
-    if (user) {
+    if (valid) {
       if (isOnAuthRoute) {
         return NextResponse.redirect(new URL("/", req.url));
       }

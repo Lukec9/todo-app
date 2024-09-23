@@ -4,7 +4,7 @@ import users from "../controllers/user.controller.js";
 import { isLoggedIn, isCurrentUser, validateUser } from "../middleware.js";
 
 router.get("/me", isLoggedIn, users.getMe);
-router.get("/verify-session", isLoggedIn, users.verifySession);
+router.get("/verify-session", users.verifySession);
 router.post("/register", validateUser, users.register);
 
 router.post("/login", users.login);
