@@ -51,7 +51,8 @@ const fetchInstance = async (
         const errorData = await response.json();
         return {
           data: null,
-          error: errorData.message || errorData.error || "Unknown error",
+          error:
+            errorData.message || errorData.error || errorData || "Unknown error",
         };
       } else {
         return { data: null, error: "An unknown error occurred" };

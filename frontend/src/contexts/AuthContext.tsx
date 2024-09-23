@@ -20,6 +20,7 @@ import {
 } from "@/actions/auth-actions";
 import { getCsrfToken } from "@/utils/getCsrfToken";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type AuthState = {
   user: UserExtended | null;
@@ -85,8 +86,14 @@ const initialState: AuthState = {
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const router = useRouter();
 
   useEffect(() => {
+    const getCSRF = async () => {
+      await getCsrfToken();
+    };
+    getCSRF();
+
     const initializeUser = async () => {
       dispatch({ type: "SET_LOADING" });
       const user = await fetchUser();
@@ -97,9 +104,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       }
       dispatch({ type: "STOP_LOADING" });
     };
-
-    getCsrfToken();
     initializeUser();
+    dispatch({ type: "STOP_LOADING" });
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {
@@ -182,7 +188,9 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       const res = await logoutUser();
       if (res.error) {
         toast.error(res.error);
+        router.refresh();
       } else if (res.data) {
+        router.push("/");
         toast.success("Logged out successfully");
       }
 
@@ -190,8 +198,10 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       if (error instanceof Error) {
         toast.error("Logout error: " + error.message);
+        router.refresh();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getUserTodos = useCallback(async (id: string) => {

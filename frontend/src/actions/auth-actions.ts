@@ -2,7 +2,6 @@
 
 import fetchInstance from "@/utils/fetchInstance";
 import type { TodoExtended } from "@shared/types";
-import { redirect } from "next/navigation";
 
 export async function fetchUser() {
   try {
@@ -44,18 +43,21 @@ export async function logout() {
     const response = await fetchInstance("/users/logout", {
       method: "POST",
     });
+
     if (response.data) {
       redirectTo = "/";
-      return response;
+      return { data: response.data, redirectTo };
     } else {
       redirectTo = "/dashboard";
-      return response;
+      return {
+        data: null,
+        error: response.error || "An unknown error occurred",
+        redirectTo,
+      };
     }
   } catch (error) {
     redirectTo = "/dashboard";
-    return { data: null, error: "Something went wrong" };
-  } finally {
-    redirect(redirectTo);
+    return { data: null, error: "Something went wrong", redirectTo };
   }
 }
 
