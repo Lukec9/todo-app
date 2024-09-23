@@ -42,7 +42,7 @@ function Button({
     <button
       type={type}
       disabled={disabled}
-      className="w-full bg-emerald-500 hover:bg-emerald-600 text-white focus:ring-2 focus-within:outline-none focus:ring-green-400 p-3 rounded-md"
+      className="w-full p-3 text-white rounded-md bg-emerald-500 hover:bg-emerald-600 focus:ring-2 focus-within:outline-none focus:ring-green-400"
     >
       {children}
     </button>
@@ -90,12 +90,12 @@ export default function LoginForm() {
   };
 
   return (
-    <main className="flex md:pt-24 pt-8 items-center justify-center overflow-hidden transition-all duration-300">
+    <main className="flex items-center justify-center pt-8 overflow-hidden transition-all duration-300 md:pt-24">
       <form
         onSubmit={onSubmit}
-        className="max-w-xl w-full mx-auto p-6 space-y-4 bg-gray-900 shadow-md rounded-lg border border-emerald-500"
+        className="w-full max-w-xl p-6 mx-auto space-y-4 bg-gray-900 border rounded-lg shadow-md border-emerald-500"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center text-emerald-500">
+        <h2 className="mb-6 text-3xl font-bold text-center text-emerald-500">
           Login
         </h2>
         <div className="space-y-2">
@@ -109,7 +109,7 @@ export default function LoginForm() {
             placeholder="Username"
           />
           {errors.username && (
-            <p className="text-red-500 text-sm">{errors.username.message}</p>
+            <p className="text-sm text-red-500">{errors.username.message}</p>
           )}
         </div>
         <div className="space-y-2">
@@ -123,10 +123,10 @@ export default function LoginForm() {
             placeholder="Password"
           />
           {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+            <p className="text-sm text-red-500">{errors.password.message}</p>
           )}
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <div className="mt-4">
           <Button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}

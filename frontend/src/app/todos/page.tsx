@@ -6,9 +6,9 @@ export default async function TodosPage() {
 
   if (todos?.length === 0) {
     return (
-      <div className="flex flex-col items-center text-center text-emerald-500 mt-16">
+      <div className="flex flex-col items-center mt-16 text-center text-emerald-500">
         <h2 className="text-4xl">You don&apos;t have any todos yet</h2>
-        <Link className="text-emerald-700 underline" href="/todos/new">
+        <Link className="underline text-emerald-700" href="/todos/new">
           Create one now
         </Link>
       </div>
@@ -16,7 +16,7 @@ export default async function TodosPage() {
   }
   return (
     <div className="flex h-screen">
-      <aside className="w-64 bg-gray-900 p-4 border-r border-emerald-600">
+      <aside className="w-64 p-4 bg-gray-900 border-r border-emerald-600">
         <ul className="mt-4 space-y-2">
           <li>
             <Link
@@ -37,13 +37,13 @@ export default async function TodosPage() {
         </ul>
       </aside>
       <div className="flex-1 p-4 bg-gray-900">
-        <h1 className="text-3xl text-emerald-400 font-semibold">Todos</h1>
+        <h1 className="text-3xl font-semibold text-emerald-400">Todos</h1>
         {todos && todos.length > 0 ? (
           <ul className="mt-4 space-y-2">
             {todos.map((todo) => (
               <li
                 key={todo._id.toString()}
-                className="bg-gray-800 rounded-md p-4 shadow-md"
+                className="p-4 bg-gray-800 rounded-md shadow-md"
               >
                 <Link
                   href={`/todos/${todo._id}`}

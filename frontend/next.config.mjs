@@ -8,6 +8,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://api-todo-q6z2.onrender.com/api/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
