@@ -7,12 +7,15 @@ export async function middleware(req: NextRequest) {
   const authRoutes = ["/login", "/signup"];
   const isOnAuthRoute = authRoutes.includes(pathname);
 
+  console.log(req.cookies, "the cookies");
+
   if (pathname === "/") {
     return NextResponse.next();
   }
 
   try {
     const response = await fetchInstance(`/users/verify-session`, {
+      method: "GET",
       cache: "no-store",
     });
 

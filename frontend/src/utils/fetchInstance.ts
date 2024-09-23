@@ -49,6 +49,7 @@ const fetchInstance = async (
     if (!response.ok) {
       if (contentType?.includes("application/json")) {
         const errorData = await response.json();
+        console.error(errorData, "not ok in fetchInstance");
         return {
           data: null,
           error: errorData.message || errorData.error || "Unknown error",
@@ -67,6 +68,7 @@ const fetchInstance = async (
     clearTimeout(timeoutId);
 
     if (error instanceof Error && error.name === "AbortError") {
+      console.error("fethcinstance catch", error.message);
       return { data: null, error: "Request timed out" };
     }
 

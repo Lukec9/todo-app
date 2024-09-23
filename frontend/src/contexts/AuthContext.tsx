@@ -98,8 +98,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "STOP_LOADING" });
     };
 
-    initializeUser();
     getCsrfToken();
+    initializeUser();
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {
