@@ -13,7 +13,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     if (foundUser) {
       return res.status(400).json({ error: "User already exists" });
     }
-    
 
     const user = new User({ email, username });
 
@@ -38,6 +37,8 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = (req: Request, res: Response, next: NextFunction): void => {
+  console.log(req.cookies);
+
   passport.authenticate(
     "local",
     (err: Error | null, user: UserExtended | false, info: unknown) => {
@@ -111,6 +112,7 @@ const getUserTodos = async (req: Request, res: Response) => {
 };
 
 const getMe = async (req: Request, res: Response) => {
+  console.log(req.cookies);
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
   } else {
@@ -119,6 +121,7 @@ const getMe = async (req: Request, res: Response) => {
 };
 
 const verifySession = (req: Request, res: Response) => {
+  console.log(req.cookies);
   if (req.isAuthenticated()) {
     res.status(200).json({ valid: true });
   } else {
