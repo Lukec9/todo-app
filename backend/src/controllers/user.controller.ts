@@ -37,8 +37,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const login = (req: Request, res: Response, next: NextFunction): void => {
-  console.log(req.cookies);
-
   passport.authenticate(
     "local",
     (err: Error | null, user: UserExtended | false, info: unknown) => {
@@ -112,10 +110,12 @@ const getUserTodos = async (req: Request, res: Response) => {
 };
 
 const getMe = async (req: Request, res: Response) => {
-  console.log(req.cookies);
+  console.log(req.cookies, "cookies in get me");
   if (req.isAuthenticated()) {
+    console.log(req.user, "user in get me");
     res.status(200).json(req.user);
   } else {
+    console.log("Not authenticated in get me");
     res.status(401).send("Not authenticated");
   }
 };
@@ -123,8 +123,10 @@ const getMe = async (req: Request, res: Response) => {
 const verifySession = (req: Request, res: Response) => {
   console.log(req.cookies);
   if (req.isAuthenticated()) {
+    console.log(req.user, "user in verify session");
     res.status(200).json({ valid: true });
   } else {
+    console.log("Not authenticated in verify session");
     res.status(401).json({ valid: false });
   }
 };
