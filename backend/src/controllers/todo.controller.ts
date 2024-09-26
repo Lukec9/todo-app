@@ -18,7 +18,7 @@ const index = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 });
     res.status(200).json(todos);
   } catch (error) {
-    console.error("Error fetching todos:", error);
+    // console.error("Error fetching todos:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

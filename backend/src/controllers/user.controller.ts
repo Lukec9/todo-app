@@ -79,7 +79,7 @@ const logout = (req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ error: err.message });
-      console.error("Error in logoutUser: ", err.message);
+      // console.error("Error in logoutUser: ", err.message);
     }
   }
 };
@@ -104,29 +104,23 @@ const getUserTodos = async (req: Request, res: Response) => {
 
     res.status(200).json(todos);
   } catch (error) {
-    console.error("Error fetching user todos:", error);
+    // console.error("Error fetching user todos:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 const getMe = async (req: Request, res: Response) => {
-  console.log(req.cookies, "cookies in get me");
   if (req.isAuthenticated()) {
-    console.log(req.user, "user in get me");
     res.status(200).json(req.user);
   } else {
-    console.log("Not authenticated in get me");
     res.status(401).send("Not authenticated");
   }
 };
 
 const verifySession = (req: Request, res: Response) => {
-  console.log(req.cookies);
   if (req.isAuthenticated()) {
-    console.log(req.user, "user in verify session");
     res.status(200).json({ valid: true });
   } else {
-    console.log("Not authenticated in verify session");
     res.status(401).json({ valid: false });
   }
 };

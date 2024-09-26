@@ -8,7 +8,6 @@ export async function fetchUser() {
     const response = await fetchInstance("/users/me", {
       method: "GET",
     });
-    console.log(response, "resonse in fetchUser action");
     if (response.data) {
       return response.data;
     } else {

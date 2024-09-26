@@ -30,8 +30,10 @@ export default function UserDashboard() {
 
   // if (loading && !userTodos) return <LoadingSpinner />;
 
+  //FIXME overlfow when there is more todos
+
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-12 h-screen bg-gray-900  shadow-md text-white lg:border-x lg:border-emerald-500">
+    <div className="max-w-5xl mx-auto p-6 space-y-12 min-h-screen bg-gray-900  shadow-md text-white lg:border-x lg:border-emerald-500">
       <div className="flex justify-between items-center border-b border-emerald-500 pb-6">
         <div className="flex items-center space-x-4">
           <Image

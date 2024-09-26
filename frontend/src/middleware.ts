@@ -16,7 +16,6 @@ export async function middleware(req: NextRequest) {
       method: "GET",
       cache: "no-store",
     });
-    console.log(response, "response in middleware");
 
     const { valid } = response.data;
 

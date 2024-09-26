@@ -15,7 +15,7 @@ export default async function TodosPage() {
     );
   }
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <aside className="w-64 p-4 bg-gray-900 border-r border-emerald-600">
         <ul className="mt-4 space-y-2">
           <li>
